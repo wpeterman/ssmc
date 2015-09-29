@@ -3,7 +3,7 @@
 #'  @param sites A three-column matrix or data frame providing the name of the site (column 1) and the xy coordinates of current sites (columns 2 & 3)
 #'  @param pop.abun A two-column data frame with mean population size in column 1 and standard deviation in column 2
 #'  @param met.size (Default = NULL) If specified, must be a two-column data frame with the mean (column 1) and standard deviation (column 2) of the size of metamoprhs or late-stage larvae. See Details for more information concerning this parameter.
-#'  @param pop.philo (Default = 0.85) Mean proportion of population that are philopatric to their natal population
+#'  @param prop.philo (Default = 0.85) Mean proportion of population that are philopatric to their natal population
 #'  @param sd.philo (Default = 0.05) Standard deviation of proportion of population that are philopatric to their natal population
 #'  @param lower.upper_philo (Default = c(lower=0, upper=1)) Threshold lower and upper values for the proportion of philopatric individuals. Must be provided as a two-element vector with lower value first. See Details for use
 #'  @param prop.survive (Default = 0.2) Mean survival of to adulthood. Ignored if \code{met.size} is specified. See Details for more information.

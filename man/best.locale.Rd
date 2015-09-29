@@ -29,6 +29,8 @@ seed=NULL)
 
 \item{met.size}{(Default = NULL) If specified, must be a two-column data frame with the mean (column 1) and standard deviation (column 2) of the size of metamoprhs or late-stage larvae. See Details for more information concerning this parameter.}
 
+\item{prop.philo}{(Default = 0.85) Mean proportion of population that are philopatric to their natal population}
+
 \item{sd.philo}{(Default = 0.05) Standard deviation of proportion of population that are philopatric to their natal population}
 
 \item{lower.upper_philo}{(Default = c(lower=0, upper=1)) Threshold lower and upper values for the proportion of philopatric individuals. Must be provided as a two-element vector with lower value first. See Details for use}
@@ -88,7 +90,7 @@ Probability of dispersal between two populations is determined using an incidenc
 Bill Peterman <Peterman.73@osu.edu>
 }
 \references{
-Altwegg, R., and H.-U. Reyer. 2003. Patterns of natural selection on size at metamorphosis in water frogs. Evolution 57:872–882.
+Altwegg, R., and H.-U. Reyer. 2003. Patterns of natural selection on size at metamorphosis in water frogs. Evolution 57:872-882.
 }
 \seealso{
 \code{\link[ssmc]{ssmc_summary}}

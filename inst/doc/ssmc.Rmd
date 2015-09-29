@@ -5,8 +5,8 @@ date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{ssmc User Guide}
-  %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r setup, include=FALSE}
@@ -17,18 +17,18 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Background
 
-The functions found in this package were originally developed as part of research focused on understanding source-sink populations dynamics of amphibians. This research was supported by the Department of Defense Strategic Environmental Research Development Program ([SERDP](https://www.serdp-estcp.org/ "SERDP web page")). This document is meant to serve as a supplement to the documentation found in the `help` files of `ssmc`. The math behind the model is presented below, but understanding the math is not essential to applying and the using the model. Please carefully read this User Guide as well as all documentation related to the functions in the R package.
+The functions found in this package were originally developed as part of research focused on understanding source-sink populations dynamics of amphibians. This research was supported by the Department of Defense Strategic Environmental Research Development Program ([SERDP](https://www.serdp-estcp.org/ "SERDP web page"); Project #RC-2155). This document is meant to serve as a supplement to the documentation found in the `help` files of `ssmc`. The math behind the model is presented below, but understanding the math is not essential to applying and the using the model. Please carefully read this User Guide as well as all documentation related to the functions in the R package.
 
 
 ### Modeling process
 There 5 steps in the modeling process:
 
 1. Select values for parameters
-    + population size---assessed separately for each population
-    + size of metamorphs^**+**^---assessed separately for each population
-    + proportion of population that is philopatric---equivalent among all populations at each iteration
-    + probability of surviving to adulthood^**+**^---equivalent among all populations at each iteration
-    + dispersal distance---equivalent among all populations at each iteration
+    + population size -- assessed separately for each population
+    + size of metamorphs^**+**^ -- assessed separately for each population
+    + proportion of population that is philopatric -- equivalent among all populations at each iteration
+    + probability of surviving to adulthood^**+**^ -- equivalent among all populations at each iteration
+    + dispersal distance -- equivalent among all populations at each iteration
 2. Determine probability of dispersal (see 'Calculating diserpsal' below)
 3. Determine the number of individuals dispersing between populations
 4. Determine the contribution and influence of each pond to the metapopuation

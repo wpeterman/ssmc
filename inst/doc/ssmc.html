@@ -1,427 +1,246 @@
 <!DOCTYPE html>
-<html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
-<title>ssmc: An R Package for assessing source-sink population status and contribution of populations to the metapopulation using demographic connectivity networks and Monte Carlo simulation</title>
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
 
-<script type="text/javascript">
-window.onload = function() {
-  var imgs = document.getElementsByTagName('img'), i, img;
-  for (i = 0; i < imgs.length; i++) {
-    img = imgs[i];
-    // center an image if it is the only element of its parent
-    if (img.parentElement.childElementCount === 1)
-      img.parentElement.style.textAlign = 'center';
+<meta name="author" content="Bill Peterman" />
+
+<meta name="date" content="2015-09-29" />
+
+<title>ssmc User Guide</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
   }
-};
-</script>
-
-<!-- Styles for R syntax highlighter -->
-<style type="text/css">
-   pre .operator,
-   pre .paren {
-     color: rgb(104, 118, 135)
-   }
-
-   pre .literal {
-     color: #990073
-   }
-
-   pre .number {
-     color: #099;
-   }
-
-   pre .comment {
-     color: #998;
-     font-style: italic
-   }
-
-   pre .keyword {
-     color: #900;
-     font-weight: bold
-   }
-
-   pre .identifier {
-     color: rgb(0, 0, 0);
-   }
-
-   pre .string {
-     color: #d14;
-   }
-</style>
-
-<!-- R syntax highlighter -->
-<script type="text/javascript">
-var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
-hljs.initHighlightingOnLoad();
-</script>
-
-<!-- MathJax scripts -->
-<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-
-
-<style type="text/css">
-body, td {
-   font-family: sans-serif;
-   background-color: white;
-   font-size: 13px;
-}
-
-body {
-  max-width: 800px;
-  margin: auto;
-  padding: 1em;
-  line-height: 20px;
-}
-
-tt, code, pre {
-   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
-}
-
-h1 {
-   font-size:2.2em;
-}
-
-h2 {
-   font-size:1.8em;
-}
-
-h3 {
-   font-size:1.4em;
-}
-
-h4 {
-   font-size:1.0em;
-}
-
-h5 {
-   font-size:0.9em;
-}
-
-h6 {
-   font-size:0.8em;
-}
-
-a:visited {
-   color: rgb(50%, 0%, 50%);
-}
-
-pre, img {
-  max-width: 100%;
-}
-pre {
-  overflow-x: auto;
-}
-pre code {
-   display: block; padding: 0.5em;
-}
-
-code {
-  font-size: 92%;
-  border: 1px solid #ccc;
-}
-
-code[class] {
-  background-color: #F8F8F8;
-}
-
-table, td, th {
-  border: none;
-}
-
-blockquote {
-   color:#666666;
-   margin:0;
-   padding-left: 1em;
-   border-left: 0.5em #EEE solid;
-}
-
-hr {
-   height: 0px;
-   border-bottom: none;
-   border-top-width: thin;
-   border-top-style: dotted;
-   border-top-color: #999999;
-}
-
-@media print {
-   * {
-      background: transparent !important;
-      color: black !important;
-      filter:none !important;
-      -ms-filter: none !important;
-   }
-
-   body {
-      font-size:12pt;
-      max-width:100%;
-   }
-
-   a, a:visited {
-      text-decoration: underline;
-   }
-
-   hr {
-      visibility: hidden;
-      page-break-before: always;
-   }
-
-   pre, blockquote {
-      padding-right: 1em;
-      page-break-inside: avoid;
-   }
-
-   tr, img {
-      page-break-inside: avoid;
-   }
-
-   img {
-      max-width: 100% !important;
-   }
-
-   @page :left {
-      margin: 15mm 20mm 15mm 10mm;
-   }
-
-   @page :right {
-      margin: 15mm 10mm 15mm 20mm;
-   }
-
-   p, h2, h3 {
-      orphans: 3; widows: 3;
-   }
-
-   h2, h3 {
-      page-break-after: avoid;
-   }
-}
 </style>
 
 
+<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0A%7D%0Apre%20%7B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
 
 </head>
 
 <body>
+
+
+
+<div id="header">
+<h1 class="title">ssmc User Guide</h1>
+<h4 class="author"><em>Bill Peterman</em></h4>
+<h4 class="date"><em>2015-09-29</em></h4>
+</div>
+
+
+<div id="ssmc-an-r-package-for-assessing-source-sink-population-status-and-contribution-of-populations-to-the-metapopulation-using-demographic-connectivity-networks-and-monte-carlo-simulation" class="section level2">
 <h2>ssmc: An R Package for assessing source-sink population status and contribution of populations to the metapopulation using demographic connectivity networks and Monte Carlo simulation</h2>
-
+<div id="background" class="section level3">
 <h3>Background</h3>
-
-<p>The functions found in this package were originally developed as part of research focused on understanding source-sink populations dynamics of amphibians. This research was supported by the Department of Defense Strategic Environmental Research Development Program (<a href="https://www.serdp-estcp.org/" title="SERDP web page">SERDP</a>). This document is meant to serve as a supplement to the documentation found in the <code>help</code> files of <code>ssmc</code>. The math behind the model is presented below, but understanding the math is not essential to applying and the using the model. Please carefully read this User Guide as well as all documentation related to the functions in the R package.</p>
-
+<p>The functions found in this package were originally developed as part of research focused on understanding source-sink populations dynamics of amphibians. This research was supported by the Department of Defense Strategic Environmental Research Development Program (<a href="https://www.serdp-estcp.org/" title="SERDP web page">SERDP</a>; Project #RC-2155). This document is meant to serve as a supplement to the documentation found in the <code>help</code> files of <code>ssmc</code>. The math behind the model is presented below, but understanding the math is not essential to applying and the using the model. Please carefully read this User Guide as well as all documentation related to the functions in the R package.</p>
+</div>
+<div id="modeling-process" class="section level3">
 <h3>Modeling process</h3>
-
 <p>There 5 steps in the modeling process:</p>
-
-<ol>
+<ol style="list-style-type: decimal">
 <li>Select values for parameters
-
 <ul>
-<li>population size&mdash;assessed separately for each population</li>
-<li>size of metamorphs<sup><strong>+</strong><sup>&mdash;assessed</sup></sup> separately for each population</li>
-<li>proportion of population that is philopatric&mdash;equivalent among all populations at each iteration</li>
-<li>probability of surviving to adulthood<sup><strong>+</strong><sup>&mdash;equivalent</sup></sup> among all populations at each iteration</li>
-<li>dispersal distance&mdash;equivalent among all populations at each iteration</li>
+<li>population size – assessed separately for each population</li>
+<li>size of metamorphs<sup><strong>+</strong></sup> – assessed separately for each population</li>
+<li>proportion of population that is philopatric – equivalent among all populations at each iteration</li>
+<li>probability of surviving to adulthood<sup><strong>+</strong></sup> – equivalent among all populations at each iteration</li>
+<li>dispersal distance – equivalent among all populations at each iteration</li>
 </ul></li>
-<li>Determine probability of dispersal (see &#39;Calculating diserpsal&#39; below)</li>
+<li>Determine probability of dispersal (see ‘Calculating diserpsal’ below)</li>
 <li>Determine the number of individuals dispersing between populations</li>
 <li>Determine the contribution and influence of each pond to the metapopuation</li>
-<li>Repeat steps 1&ndash;4 for the specified number of Monte Carlo iterations</li>
+<li>Repeat steps 1–4 for the specified number of Monte Carlo iterations</li>
 </ol>
-
 <p>Each of the above stochastic variables is drawn from a normal distribution with a mean and standard deviation that is specified based on your system. At each Monte Carlo iteration, different values are drawn.</p>
-
-<p>After all iterations are complete, the ratio of immigrant:philopatric (\(\frac{i}{p}\)) individuals is assessed. If  \(\frac{i}{p}>1\), the population is considered a sink, if \(\frac{i}{p} \leqslant 1\) the population is considered a source. This evaluation is made for each iteration, and the frequency at which a population acts as a source or sink is evaluated. Additionally, the average number of emigrants, immigrants, and philopatric individuals is determined for each population, as well as the average contribution of each population to the metapopulation.</p>
-
-<p><sup><strong>+</strong>^</sup> The size of metamorphs, if specified, is used to determine the population-specific probability of survival to adulthood using the equation: 
-\[logit(survival) = -1.366 + 0.87 * size,\]
-If metamorph size is not provided, then survival probability is drawn from distribution and will be uniform across all populations. The above equation come from Altwegg &amp; Reyer (<a href="http://onlinelibrary.wiley.com/doi/10.1111/j.0014-3820.2003.tb00298.x/abstract" title="Link to paper">2003</a>)</p>
-
+<p>After all iterations are complete, the ratio of immigrant:philopatric (<span class="math inline">\(\frac{i}{p}\)</span>) individuals is assessed. If <span class="math inline">\(\frac{i}{p}&gt;1\)</span>, the population is considered a sink, if <span class="math inline">\(\frac{i}{p} \leqslant 1\)</span> the population is considered a source. This evaluation is made for each iteration, and the frequency at which a population acts as a source or sink is evaluated. Additionally, the average number of emigrants, immigrants, and philopatric individuals is determined for each population, as well as the average contribution of each population to the metapopulation.</p>
+<p><sup><strong>+</strong></sup> The size of metamorphs, if specified, is used to determine the population-specific probability of survival to adulthood using the equation: <span class="math display">\[logit(survival) = -1.366 + 0.87 * size,\]</span> If metamorph size is not provided, then survival probability is drawn from distribution and will be uniform across all populations. The above equation come from Altwegg &amp; Reyer (<a href="http://onlinelibrary.wiley.com/doi/10.1111/j.0014-3820.2003.tb00298.x/abstract" title="Link to paper">2003</a>)</p>
+</div>
+<div id="calculating-dispersal" class="section level3">
 <h3>Calculating dispersal</h3>
-
-<p>The probability of successful dispersal from population \(i\) to population \(j\) is calculated as:
-\[m_{ij}= exp(-\alpha d_{ij} ),\]
-for \(j\neq i\) and \(m_{ii}=0\). Average dispersal distance is \(1/\alpha\) and \(d_{ij}\) is the distance between populations \(i\) and \(j\). The probabilities of \(m_{ij}\) are standardized so that rows \(i\) sum to one by </p>
-
-<p>\[m'_{ij}= \frac{m_{ij}} {\sum_{i}^{j}}. \]</p>
-
-<p>The number of individuals, \(n\), dispersing from population \(i\) to \(j\) is then determined using a multinomial distribution such that</p>
-
-<p>\[P(n_1, n_2, &hellip;, n_k) = \frac {N!}{(n_1! n_2! &hellip; n_k! )} * (p_{1}^{n_1} p_{2}^{n_2} &hellip; p_{k}^{n_k}) \]</p>
-
+<p>The probability of successful dispersal from population <span class="math inline">\(i\)</span> to population <span class="math inline">\(j\)</span> is calculated as: <span class="math display">\[m_{ij}= exp(-\alpha d_{ij} ),\]</span> for <span class="math inline">\(j\neq i\)</span> and <span class="math inline">\(m_{ii}=0\)</span>. Average dispersal distance is <span class="math inline">\(1/\alpha\)</span> and <span class="math inline">\(d_{ij}\)</span> is the distance between populations <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>. The probabilities of <span class="math inline">\(m_{ij}\)</span> are standardized so that rows <span class="math inline">\(i\)</span> sum to one by</p>
+<p><span class="math display">\[m'_{ij}= \frac{m_{ij}} {\sum_{i}^{j}}. \]</span></p>
+<p>The number of individuals, <span class="math inline">\(n\)</span>, dispersing from population <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span> is then determined using a multinomial distribution such that</p>
+<p><span class="math display">\[P(n_1, n_2, ..., n_k) = \frac {N!}{(n_1! n_2! ... n_k! )} * (p_{1}^{n_1} p_{2}^{n_2} ... p_{k}^{n_k}) \]</span></p>
 <p>where</p>
-
 <ul>
-<li>\(N\) is the number of emigrants from \(i\)</li>
-<li>\(k\) is the total number of populations that individuals could disperse to</li>
-<li>\(n_{ij}\) is the number of dispersers from population \(i\) to \(j\)</li>
-<li>\(p_{ij}\) is the probability dispersing from population \(i\) to \(j\), as determined from \(m'_{ij}\)</li>
+<li><span class="math inline">\(N\)</span> is the number of emigrants from <span class="math inline">\(i\)</span></li>
+<li><span class="math inline">\(k\)</span> is the total number of populations that individuals could disperse to</li>
+<li><span class="math inline">\(n_{ij}\)</span> is the number of dispersers from population <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span></li>
+<li><span class="math inline">\(p_{ij}\)</span> is the probability dispersing from population <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span>, as determined from <span class="math inline">\(m'_{ij}\)</span></li>
 </ul>
-
-<p>Values \(n_{ij}\) are components of the landscape matrix \(\mathrm{M}_{ij}\).
-Summing across columns, \(j\), of matrix <strong>M</strong> gives the total number of emigrants leaving population \(i\), while summing across rows, \(i\), gives the total number of immigrants entering population \(j\).</p>
-
-<p>\[emigrants_i = \sum_{n=1}^{j} \mathrm{M}_{ij} \]
-\[immigrants_j = \sum_{n=1}^{i} \mathrm{M}_{ij} \]</p>
-
+<p>Values <span class="math inline">\(n_{ij}\)</span> are components of the landscape matrix <span class="math inline">\(\mathrm{M}_{ij}\)</span>. Summing across columns, <span class="math inline">\(j\)</span>, of matrix <strong>M</strong> gives the total number of emigrants leaving population <span class="math inline">\(i\)</span>, while summing across rows, <span class="math inline">\(i\)</span>, gives the total number of immigrants entering population <span class="math inline">\(j\)</span>.</p>
+<p><span class="math display">\[emigrants_i = \sum_{n=1}^{j} \mathrm{M}_{ij} \]</span> <span class="math display">\[immigrants_j = \sum_{n=1}^{i} \mathrm{M}_{ij} \]</span></p>
+</div>
+<div id="determining-contribution-to-the-metapopulation" class="section level3">
 <h3>Determining contribution to the metapopulation</h3>
-
-<p>Metapopulation capacity, as defined by Hanski &amp; Ovaskainen (<a href="http://www.nature.com/nature/journal/v404/n6779/full/404755a0.html%22Link%20to%20paper%22">2000</a>), is a measure that encompasses the arrangement of habitat patches as well as the size of those patches. Size is used as a proxy for population carrying capacity, which is replaced with estimated abundance in the model formulation of <code>ssmc</code>.
-Following Hanski &amp; Ovaskainen (<a href="http://www.nature.com/nature/journal/v404/n6779/full/404755a0.html%22Link%20to%20paper%22">2000</a>), we assess the metapopulation capacity, \(\lambda_\mathrm{M}\), which is the leading eigen-value of landscape matrix <strong>M</strong>. The individual contributions of each population, \(i\), to \(\lambda_\mathrm{M}\) is 
-\[\lambda_i \equiv x_{i}^{2} \lambda_\mathrm{M},\]
-where \(x_i\) is the $i$th element in the leading eigenvector of the landscape matrix <strong>M</strong>. As such, \(\lambda_i\) measures the  contribution of each population to metapopulation capacity. The importance of population \(i\) can be further assessed by removing it from the metapopulation network and recalculating \(\lambda_\mathrm{M}\). Alternatively, it is possible to assess the contribution of newly created habtiat to the metapopulation by adding new population \(i\) to the network. This is what the functions <code>site.analysis</code> and <code>best.locale</code> of the R package <code>ssmc</code> seek to do.</p>
-
-<p>##Setup</p>
-
+<p>Metapopulation capacity, as defined by Hanski &amp; Ovaskainen (<a href="http://www.nature.com/nature/journal/v404/n6779/full/404755a0.html&quot;Link%20to%20paper&quot;">2000</a>), is a measure that encompasses the arrangement of habitat patches as well as the size of those patches. Size is used as a proxy for population carrying capacity, which is replaced with estimated abundance in the model formulation of <code>ssmc</code>. Following Hanski &amp; Ovaskainen (<a href="http://www.nature.com/nature/journal/v404/n6779/full/404755a0.html&quot;Link%20to%20paper&quot;">2000</a>), we assess the metapopulation capacity, <span class="math inline">\(\lambda_\mathrm{M}\)</span>, which is the leading eigen-value of landscape matrix <strong>M</strong>. The individual contributions of each population, <span class="math inline">\(i\)</span>, to <span class="math inline">\(\lambda_\mathrm{M}\)</span> is <span class="math display">\[\lambda_i \equiv x_{i}^{2} \lambda_\mathrm{M},\]</span> where <span class="math inline">\(x_i\)</span> is the <span class="math inline">\(i\)</span>th element in the leading eigenvector of the landscape matrix <strong>M</strong>. As such, <span class="math inline">\(\lambda_i\)</span> measures the contribution of each population to metapopulation capacity. The importance of population <span class="math inline">\(i\)</span> can be further assessed by removing it from the metapopulation network and recalculating <span class="math inline">\(\lambda_\mathrm{M}\)</span>. Alternatively, it is possible to assess the contribution of newly created habtiat to the metapopulation by adding new population <span class="math inline">\(i\)</span> to the network. This is what the functions <code>site.analysis</code> and <code>best.locale</code> of the R package <code>ssmc</code> seek to do.</p>
+</div>
+</div>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<div id="install-necessary-software-and-packages" class="section level4">
 <h4>Install necessary software and packages</h4>
-
 <p>You will also need to have <a href="http://www.r-project.org/" title="R downloads">R &gt;= v3.0</a> installed. I would highly recommend installing <a href="https://www.rstudio.com/ide/download/" title="R Studio download">R studio</a> when working with R.</p>
-
-<p><em><strong>Getting the R Package</strong></em>    </p>
-
+<p><em><strong>Getting the R Package</strong></em></p>
 <p>First, install <code>ssmc</code> from GitHub. This will require the <code>devtools</code> package</p>
-
-<pre><code class="r"># Install &#39;devtools&#39; package, if needed
-if(!(&quot;devtools&quot; %in% list.files(.libPaths()))) {
-    install.packages(&quot;devtools&quot;, 
-                     repo = &quot;http://cran.rstudio.com&quot;, 
-                     dep = TRUE) 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Install 'devtools' package, if needed</span>
+if(!(<span class="st">&quot;devtools&quot;</span> %in%<span class="st"> </span><span class="kw">list.files</span>(<span class="kw">.libPaths</span>()))) {
+    <span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>, 
+                     <span class="dt">repo =</span> <span class="st">&quot;http://cran.rstudio.com&quot;</span>, 
+                     <span class="dt">dep =</span> <span class="ot">TRUE</span>) 
 }
 
-library(devtools) # Loads devtools
+<span class="kw">library</span>(devtools) <span class="co"># Loads devtools</span>
 
-install_github(&quot;wpeterman/ssmc&quot;) # Download package
-</code></pre>
-
+<span class="kw">install_github</span>(<span class="st">&quot;wpeterman/ssmc&quot;</span>) <span class="co"># Download package</span></code></pre></div>
 <p>Load <code>ssmc</code> and clear your workspace.</p>
-
-<pre><code class="r">library(ssmc)
-rm(list = ls())
-</code></pre>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(ssmc)
+<span class="kw">rm</span>(<span class="dt">list =</span> <span class="kw">ls</span>())</code></pre></div>
+</div>
+<div id="assessing-the-source-sink-status-and-importance-of-populations-to-the-metapopulation" class="section level4">
 <h4>Assessing the source-sink status and importance of populations to the metapopulation</h4>
-
 <p>The <code>ssmc</code> package comes with a simulted sample data set called <code>site.dat</code>. After loading the <code>ssmc</code> package, you can explore the structure and format of the data file.</p>
-
-<pre><code class="r">str(site.dat)
-</code></pre>
-
-<pre><code>## &#39;data.frame&#39;:    25 obs. of  7 variables:
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(site.dat)</code></pre></div>
+<pre><code>## 'data.frame':    25 obs. of  7 variables:
 ##  $ site    : int  1 2 3 4 5 6 7 8 9 10 ...
 ##  $ x       : num  25.1 93.5 32.3 45.2 96.2 ...
 ##  $ y       : num  0.435 0.783 0.192 0.301 0.572 ...
 ##  $ ab.mean : num  0 76.5 0 204.4 241.3 ...
 ##  $ ab.sd   : num  0 5.4825 0 1.5547 0.0809 ...
 ##  $ svl.mean: num  1.057 0.4552 -0.4095 0.0623 -0.9316 ...
-##  $ svl.sd  : num  0.369 1.363 1.402 0.721 0.802 ...
-</code></pre>
-
+##  $ svl.sd  : num  0.369 1.363 1.402 0.721 0.802 ...</code></pre>
 <p>There are seven variables included in the data frame. This format is not essential to using the functions of <code>ssmc</code>, as paramter values are individually specified for each function.</p>
-
-<p>To assess source-sink status of existing populations, use the <code>site.analysis</code> function. Following the example provided in the help documentation, run the function. </p>
-
-<pre><code class="r">site_results &lt;- site.analysis(sites = site.dat[,1:3],
-                              pop.abun = site.dat[,4:5],
-                              met.size = site.dat[,6:7],
-                              prop.philo = 0.95,   
-                              sd.philo = 0.05,
-                              lower.upper_philo=c(lower=0, upper=1),
-                              lower.upper_survive = c(lower=0, upper=1),
-                              dispersal = 25,
-                              sd.dispersal = 10,
-                              lower.upper_dispersal = c(lower=10, upper=Inf),
-                              iterations = 5,
-                              seed = 123)
-</code></pre>
-
+<p>To assess source-sink status of existing populations, use the <code>site.analysis</code> function. Following the example provided in the help documentation, run the function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">site_results &lt;-<span class="st"> </span><span class="kw">site.analysis</span>(<span class="dt">sites =</span> site.dat[,<span class="dv">1</span>:<span class="dv">3</span>],
+                              <span class="dt">pop.abun =</span> site.dat[,<span class="dv">4</span>:<span class="dv">5</span>],
+                              <span class="dt">met.size =</span> site.dat[,<span class="dv">6</span>:<span class="dv">7</span>],
+                              <span class="dt">prop.philo =</span> <span class="fl">0.95</span>,   
+                              <span class="dt">sd.philo =</span> <span class="fl">0.05</span>,
+                              <span class="dt">lower.upper_philo=</span><span class="kw">c</span>(<span class="dt">lower=</span><span class="dv">0</span>, <span class="dt">upper=</span><span class="dv">1</span>),
+                              <span class="dt">lower.upper_survive =</span> <span class="kw">c</span>(<span class="dt">lower=</span><span class="dv">0</span>, <span class="dt">upper=</span><span class="dv">1</span>),
+                              <span class="dt">dispersal =</span> <span class="dv">25</span>,
+                              <span class="dt">sd.dispersal =</span> <span class="dv">10</span>,
+                              <span class="dt">lower.upper_dispersal =</span> <span class="kw">c</span>(<span class="dt">lower=</span><span class="dv">10</span>, <span class="dt">upper=</span><span class="ot">Inf</span>),
+                              <span class="dt">iterations =</span> <span class="dv">5</span>,
+                              <span class="dt">seed =</span> <span class="dv">123</span>)</code></pre></div>
 <p>The results of <code>site.analysis</code> contain both a summary data frame as well as the raw data from each Monte Carlo iteration. The summary data frame can be exported and sorted based on the desired rank criteria using the <code>ssmc_summary</code> function.</p>
-
-<pre><code class="r">site_summary &lt;- ssmc_summary(ssmc_results = site_results,
-                             sort = &quot;avg_rank&quot;)
-str(site_summary)
-</code></pre>
-
-<pre><code>## &#39;data.frame&#39;:    25 obs. of  14 variables:
-##  $ site     : int  8 19 23 5 18 15 1 17 20 24 ...
-##  $ x        : num  70.83 78.16 90.49 96.15 7.29 ...
-##  $ y        : num  0.437 0.925 0.915 0.572 0.804 ...
-##  $ immig    : num  0.4 0.8 1.8 0.6 0.8 0.4 1.2 0.8 0.8 1.6 ...
-##  $ philo    : num  34 38 27 40.6 51 54.4 0 8.8 0 3.6 ...
-##  $ emig     : num  4 3.6 1.6 1.4 3.6 4.2 0 0.6 0 0 ...
-##  $ pct_immig: num  0.0133 0.0221 0.0632 0.0134 0.017 ...
-##  $ pct_sink : num  0 0 0 0 0 0 1 0 1 0.2 ...
-##  $ pct_src  : num  1 1 1 1 1 1 0 1 0 0.8 ...
-##  $ cont_lam : num  0.1986 0.0851 0.0108 0.0253 0.0368 ...
-##  $ rank_cont: num  2 3 7 6 4 8 1 9 18.5 18.5 ...
-##  $ delta_lam: num  -3.45 -3.28 -4.61 -3.43 -2.7 ...
-##  $ rank_lamb: num  2 4 1 3 5 7 19 14 6 8 ...
-##  $ avg_rank : int  1 2 3 4 4 6 7 8 9 10 ...
-</code></pre>
-
-<p>It is possible to sort the summary data frame using one of the three rank variables generated during the simulation: </p>
-
-<ol>
-<li>&#39;rank_cont&#39;: Populations are ranked based on their average contribution, \(\lambda_i\), to metapopulation capacity</li>
-<li>&#39;rank<em>lamb&#39;: Populations are ranked based on the average change in metapopulation capacity, $\Delta \lambda</em>\mathrm{M}$</li>
-<li>&#39;avg_rank&#39;: The average of &#39;rank_cont&#39; and &#39;rank_lamb&#39;</li>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">site_summary &lt;-<span class="st"> </span><span class="kw">ssmc_summary</span>(<span class="dt">ssmc_results =</span> site_results,
+                             <span class="dt">sort =</span> <span class="st">&quot;avg_rank&quot;</span>)
+<span class="kw">str</span>(site_summary)</code></pre></div>
+<pre><code>## 'data.frame':    25 obs. of  14 variables:
+##  $ site     : int  8 19 18 23 15 1 5 17 20 24 ...
+##  $ x        : num  70.83 78.16 7.29 90.49 5.47 ...
+##  $ y        : num  0.437 0.925 0.804 0.915 0.518 ...
+##  $ immig    : num  0.4 0.8 0.8 1.8 0.4 1.2 0.6 0.8 0.8 1.6 ...
+##  $ philo    : num  34 38 51 27 54.4 0 40.6 8.8 0 3.6 ...
+##  $ emig     : num  4 3.6 3.6 1.6 4.2 0 1.4 0.6 0 0 ...
+##  $ pct_immig: num  0.01333 0.02207 0.01695 0.06319 0.00731 ...
+##  $ pct_sink : num  0 0 0 0 0 1 0 0 1 0.2 ...
+##  $ pct_src  : num  1 1 1 1 1 0 1 1 0 0.8 ...
+##  $ cont_lam : num  0.1986 0.0851 0.0368 0.0108 0.0098 ...
+##  $ rank_cont: num  2 3 4 7 8 1 6 9 18.5 18.5 ...
+##  $ delta_lam: num  -3.45 -3.28 -2.7 -4.61 -2.66 ...
+##  $ rank_lamb: num  2 3 4 1 6 19 14 13 5 7 ...
+##  $ avg_rank : int  1 2 3 3 5 6 6 8 9 10 ...</code></pre>
+<p>It is possible to sort the summary data frame using one of the three rank variables generated during the simulation:</p>
+<ol style="list-style-type: decimal">
+<li>‘rank_cont’: Populations are ranked based on their average contribution, <span class="math inline">\(\lambda_i\)</span>, to metapopulation capacity</li>
+<li>‘rank_lamb’: Populations are ranked based on the average change in metapopulation capacity, <span class="math inline">\(\Delta \lambda_\mathrm{M}\)</span></li>
+<li>‘avg_rank’: The average of ‘rank_cont’ and ‘rank_lamb’</li>
 </ol>
-
 <p>Elements of the summary data frame include:</p>
-
-<ol>
+<ol style="list-style-type: decimal">
 <li><code>immig</code>: The average number of immigrants entering each population</li>
 <li><code>philo</code>: The average number of philopatric individuals</li>
 <li><code>emig</code>: The average number of emigrants dispersing from a population</li>
 <li><code>pct_immig</code>: Average percentage of a population that is comprised of immigrants</li>
-<li><code>pct_sink</code>: The frequency that a population acted as a sink (i.e. \(\frac{i}{p} > 1\)) across all simulations</li>
-<li><code>pct_src</code>: The frequency that a population acted as a source (i.e. \(\frac{i}{p} \leqslant 1\)) across all simulations </li>
-<li><code>cont_lamb</code>: The contribution of each location to the metapopulation (\(\lambda_i\)) </li>
+<li><code>pct_sink</code>: The frequency that a population acted as a sink (i.e. <span class="math inline">\(\frac{i}{p} &gt; 1\)</span>) across all simulations</li>
+<li><code>pct_src</code>: The frequency that a population acted as a source (i.e. <span class="math inline">\(\frac{i}{p} \leqslant 1\)</span>) across all simulations</li>
+<li><code>cont_lamb</code>: The contribution of each location to the metapopulation (<span class="math inline">\(\lambda_i\)</span>)</li>
 <li><code>rank_cont</code>: The rank order importance of each location to the metapopulation</li>
-<li><code>delta_lam</code>: The change in the value of the the leading eigen value of the connectivity matrix when population \(i\) is removed, which is interpreted as the metapopulation capacity. This is calculated as the log ratio of values \(\Delta \lambda_\mathrm{M} = log(lambda.new / lambda.old)\) </li>
-<li><code>rank_lamb</code>: The rank order importance of each location to metapopulation capacity; </li>
+<li><code>delta_lam</code>: The change in the value of the the leading eigen value of the connectivity matrix when population <span class="math inline">\(i\)</span> is removed, which is interpreted as the metapopulation capacity. This is calculated as the log ratio of values <span class="math inline">\(\Delta \lambda_\mathrm{M} = log(lambda.new / lambda.old)\)</span></li>
+<li><code>rank_lamb</code>: The rank order importance of each location to metapopulation capacity;</li>
 <li><code>avg_rank</code>: The rank importance of each potential location, determined by averaging <code>rank_cont</code> and <code>rank_lamb</code></li>
 </ol>
-
 <p><strong>Comments on using <code>site.analysis</code></strong></p>
-
-<ol>
-<li>This is a rather computationally intensive process, so the number of Monte Carlo iterations has been kept to a minimum for example purposes. It is highly recommended that 1,000&ndash;10,000 iterations be used when conducting real analyses.</li>
+<ol style="list-style-type: decimal">
+<li>This is a rather computationally intensive process, so the number of Monte Carlo iterations has been kept to a minimum for example purposes. It is highly recommended that 1,000–10,000 iterations be used when conducting real analyses.</li>
 <li>Because <code>met.size</code> was specified, there is no need to specify <code>prop.survive</code> and <code>sd.survive</code>.</li>
 <li><code>met.size</code>, if provided, must be in standard units with a mean of zero and standard deviation of one</li>
 <li>The units for dispersal distance are arbitrary, but must correspond with the distances that will be calculated between populations based on the xy coordinates. The model was originally applied to populations with xy coordinates in UTM, and dispersal distances in meters.</li>
-<li>The <code>lower.upper_</code> parameters are used to specify lower and upper threshold values when sampling from a normal distribution. </li>
+<li>The <code>lower.upper_</code> parameters are used to specify lower and upper threshold values when sampling from a normal distribution.</li>
 </ol>
-
+</div>
+<div id="assessing-the-potential-of-a-new-or-restored-population-to-contribute-to-the-metapopulation" class="section level4">
 <h4>Assessing the potential of a new or restored population to contribute to the metapopulation</h4>
-
 <p>The use of the <code>best.locale</code> function is identical to <code>site.analysis</code> except that a data frame of potential sites is provided to be evaluated as part of the metapopulation network. <code>potential.dat</code> is provided with the package as an example of a potential location data frame.</p>
-
-<pre><code class="r">best_results &lt;- best.locale(sites = site.dat[,1:3],
-                            potential.sites = potential.dat,
-                            pop.abun = site.dat[,4:5],
-                            met.size = site.dat[,6:7],
-                            prop.philo = 0.95,
-                            sd.philo = 0.05,
-                            lower.upper_philo=c(lower=0, upper=1),
-                            lower.upper_survive = c(lower=0, upper=1),
-                            dispersal = 25,
-                            sd.dispersal = 10,
-                            lower.upper_dispersal = c(lower=10, upper=Inf),
-                            iterations = 5,
-                            seed = 123)
-</code></pre>
-
-<p>At each Monte Carlo iteration, the function evaluates the contribution of each potential location in contributing to \(\lambda_i\) as well as the metapopulation capacity, \(\lambda_\mathrm{M}\), of the network with the population included. Because these are hpothetical populations with no abundance, size, or survival parameters, these parameters are set to the mean value of all non-zero populations for that iteration of the analysis. As such, each potential location is evaluated as if it were an &#39;average&#39; population on the landscape.</p>
-
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">best_results &lt;-<span class="st"> </span><span class="kw">best.locale</span>(<span class="dt">sites =</span> site.dat[,<span class="dv">1</span>:<span class="dv">3</span>],
+                            <span class="dt">potential.sites =</span> potential.dat,
+                            <span class="dt">pop.abun =</span> site.dat[,<span class="dv">4</span>:<span class="dv">5</span>],
+                            <span class="dt">met.size =</span> site.dat[,<span class="dv">6</span>:<span class="dv">7</span>],
+                            <span class="dt">prop.philo =</span> <span class="fl">0.95</span>,
+                            <span class="dt">sd.philo =</span> <span class="fl">0.05</span>,
+                            <span class="dt">lower.upper_philo=</span><span class="kw">c</span>(<span class="dt">lower=</span><span class="dv">0</span>, <span class="dt">upper=</span><span class="dv">1</span>),
+                            <span class="dt">lower.upper_survive =</span> <span class="kw">c</span>(<span class="dt">lower=</span><span class="dv">0</span>, <span class="dt">upper=</span><span class="dv">1</span>),
+                            <span class="dt">dispersal =</span> <span class="dv">25</span>,
+                            <span class="dt">sd.dispersal =</span> <span class="dv">10</span>,
+                            <span class="dt">lower.upper_dispersal =</span> <span class="kw">c</span>(<span class="dt">lower=</span><span class="dv">10</span>, <span class="dt">upper=</span><span class="ot">Inf</span>),
+                            <span class="dt">iterations =</span> <span class="dv">5</span>,
+                            <span class="dt">seed =</span> <span class="dv">123</span>)</code></pre></div>
+<p>At each Monte Carlo iteration, the function evaluates the contribution of each potential location in contributing to <span class="math inline">\(\lambda_i\)</span> as well as the metapopulation capacity, <span class="math inline">\(\lambda_\mathrm{M}\)</span>, of the network with the population included. Because these are hpothetical populations with no abundance, size, or survival parameters, these parameters are set to the mean value of all non-zero populations for that iteration of the analysis. As such, each potential location is evaluated as if it were an ‘average’ population on the landscape.</p>
 <p>The output from the <code>best.locale</code> analysis is similar to that of <code>site.analysis</code> and the summary data frame can again be extracted and sorted using <code>ssmc_summary</code></p>
-
-<pre><code class="r">best_summary &lt;- ssmc_summary(ssmc_results = best_results,
-                             sort = &quot;avg_rank&quot;)
-str(best_summary)
-</code></pre>
-
-<pre><code>## &#39;data.frame&#39;:    25 obs. of  8 variables:
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">best_summary &lt;-<span class="st"> </span><span class="kw">ssmc_summary</span>(<span class="dt">ssmc_results =</span> best_results,
+                             <span class="dt">sort =</span> <span class="st">&quot;avg_rank&quot;</span>)
+<span class="kw">str</span>(best_summary)</code></pre></div>
+<pre><code>## 'data.frame':    25 obs. of  8 variables:
 ##  $ site     : int  6 1 12 16 2 10 14 15 17 18 ...
 ##  $ x        : num  99.42 25.45 6.64 34.05 62.17 ...
 ##  $ y        : num  6.05 75.19 55.1 74.65 53.28 ...
@@ -429,15 +248,26 @@ str(best_summary)
 ##  $ rank_cont: num  9 2.5 2.5 2.5 2.5 14 14 14 14 14 ...
 ##  $ lambda   : num  2.12 1.88 1.88 1.88 1.5 ...
 ##  $ rank_lamb: num  3 13 13 13 17 6.5 6.5 6.5 6.5 6.5 ...
-##  $ avg_rank : int  1 2 2 2 5 6 6 6 6 6 ...
-</code></pre>
-
+##  $ avg_rank : int  1 2 2 2 5 6 6 6 6 6 ...</code></pre>
+</div>
+<div id="citations" class="section level3">
 <h3>Citations</h3>
+<p>Altwegg, R., and H.-U. Reyer. 2003. Patterns of natural selection on size at metamorphosis in water frogs. Evolution 57:872–882.</p>
+<p>Hanski, I., and O. Ovaskainen. 2000. The metapopulation capacity of a fragmented landscape. Nature 404:755–758.</p>
+</div>
+</div>
 
-<p>Altwegg, R., and H.-U. Reyer. 2003. Patterns of natural selection on size at metamorphosis in water frogs. Evolution 57:872&ndash;882.</p>
 
-<p>Hanski, I., and O. Ovaskainen. 2000. The metapopulation capacity of a fragmented landscape. Nature 404:755&ndash;758.</p>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 </body>
-
 </html>

@@ -58,7 +58,7 @@
 #'    iterations = 10,
 #'    seed = 123)
 #'
-#'    @references Altwegg, R., and H.-U. Reyer. 2003. Patterns of natural selection on size at metamorphosis in water frogs. Evolution 57:872–882.
+#'    @references Altwegg, R., and H.-U. Reyer. 2003. Patterns of natural selection on size at metamorphosis in water frogs. Evolution 57:872-882.
 
 best.locale <- function(sites,
                         potential.sites,

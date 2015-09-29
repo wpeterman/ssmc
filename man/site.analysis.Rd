@@ -26,6 +26,8 @@ seed=NULL)
 
 \item{met.size}{(Default = NULL) If specified, must be a two-column data frame with the mean (column 1) and standard deviation (column 2) of the size of metamoprhs or late-stage larvae. See Details for more information concerning this parameter.}
 
+\item{prop.philo}{(Default = 0.85) Mean proportion of population that are philopatric to their natal population}
+
 \item{sd.philo}{(Default = 0.05) Standard deviation of proportion of population that are philopatric to their natal population}
 
 \item{lower.upper_philo}{(Default = c(lower=0, upper=1)) Threshold lower and upper values for the proportion of philopatric individuals. Must be provided as a two-element vector with lower value first. See Details for use}
@@ -45,8 +47,6 @@ seed=NULL)
 \item{iterations}{Number of Monte Carlo iterations to run}
 
 \item{seed}{Optional to set the seed for repeatability  among model runs (Default = NULL)}
-
-\item{pop.philo}{(Default = 0.85) Mean proportion of population that are philopatric to their natal population}
 }
 \value{
 This function returns a list with two components: (1) \code{$summary.df} is a data frame with the results averaged over all Monte Carlo iterations, and (2) \code{$results.list} is a list of length equal to the number of Monte Carlo iterations and contains the raw results from the analysis.
