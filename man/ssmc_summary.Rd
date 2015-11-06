@@ -4,10 +4,12 @@
 \alias{ssmc_summary}
 \title{A function to extract the summary data from \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}} functions}
 \usage{
-ssmc_summary(ssmc_results)
+ssmc_summary(ssmc_results, ...)
 }
 \arguments{
 \item{ssmc_results}{Output object from \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}}}
+
+\item{...}{Optional to select which column to sort by when summarizing the results data frame. The default is to sort by \code{rank}}
 }
 \value{
 This function returns a data frame of the summarized results from either the \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}} sorted by the specified column.
@@ -33,7 +35,11 @@ A function to extract the summary data from \code{\link[ssmc]{site.analysis}} or
    iterations = 10,
    seed = 123)
 
+## Default
    best_locales <- ssmc_summary(best_results)
+
+## Sort by the adjusted rank
+   best_locales <- ssmc_summary(best_results, 'rank_adj')
 }
 \author{
 Bill Peterman <Peterman.73@osu.edu>

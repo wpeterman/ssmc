@@ -1,8 +1,9 @@
 #'  A function to extract the summary data from \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}} functions
 #'
 #'  @param ssmc_results Output object from \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}}
+#'  @param ... Optional to select which column to sort by when summarizing the results data frame. The default is to sort by \code{rank}
 #'
-#'  @usage ssmc_summary(ssmc_results)
+#'  @usage ssmc_summary(ssmc_results, ...)
 #'
 #' @author Bill Peterman <Peterman.73@@osu.edu>
 #'
@@ -10,11 +11,7 @@
 #'
 #' @export
 #'
-
-#'
-#'    @usage ssmc_summary(ssmc_results)
-#'
-#'    @examples
+#' @examples
 #'    # Assess potential new locations
 #'    best_results <- best.locale(sites = site.dat[,1:3],
 #'    potential.sites = potential.dat,
@@ -32,7 +29,12 @@
 #'    iterations = 10,
 #'    seed = 123)
 #'
+#' ## Default
 #'    best_locales <- ssmc_summary(best_results)
+#'
+#' ## Sort by the adjusted rank
+#'    best_locales <- ssmc_summary(best_results, 'rank_adj')
+
 
 ssmc_summary <- function(ssmc_results, ...) {
   dots <- list(...)                   #1
