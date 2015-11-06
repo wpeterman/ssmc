@@ -29,6 +29,7 @@ NULL
 #'    \item site - Numeric site ID
 #'    \item x -  x-coordinate
 #'    \item y -  y-coordinate
+#'    \item A - area of each site
 #'    \item ab.mean Mean population abundance of each site
 #'    \item ad.sd Standard deviation of mean population abundance at each site
 #'    \item svl.mean Mean size (snout-vent length = SVL) for each population. Provided in standard units such that the mean of all observation equals 0 with a standard deviation of 1 (i.e. scaled and centered)
@@ -37,7 +38,7 @@ NULL
 #'
 #' @docType data
 #' @name site.dat
-#' @format A 25 x 7 data frame
+#' @format A 25 x 8 data frame
 #' @usage data(site.dat)
 #' @keywords datasets
 #'

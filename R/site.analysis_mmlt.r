@@ -1,6 +1,6 @@
-#'  A function to assess average source-sink status of populations as well as rank importance of populations in contributing to the metapopulation
+#'  A function to assess average source-sink status of populations as well as rank importance of populations in contributing to the metapopulation mean lifetime
 #'
-#'  @param sites A three-column matrix or data frame providing the name of the site (column 1) and the xy coordinates of current sites (columns 2 & 3)
+#'  @param sites A four-column matrix or data frame providing the name of the site (column 1) and the xy coordinates of current sites (columns 2 & 3), and area of the habitat patch (column 4)
 #'  @param pop.abun A two-column data frame with mean population size in column 1 and standard deviation in column 2
 #'  @param met.size (Default = NULL) If specified, must be a two-column data frame with the mean (column 1) and standard deviation (column 2) of the size of metamoprhs or late-stage larvae. See Details for more information concerning this parameter.
 #'  @param prop.philo (Default = 0.85) Mean proportion of population that are philopatric to their natal population
@@ -12,6 +12,9 @@
 #'  @param dispersal Mean dispersal distance. Should be specified in units meaningful to the coordinate system describing the spatial location of populations. See Details for how dispersal is estimated.
 #'  @param sd.dispersal Standard deviation of dispersal distance.
 #'  @param lower.upper_dispersal (Default = c(lower=1, upper=Inf))Threshold lower and upper values for average dispersal distance. Must be provided as a two-element vector with minimum value first. See Details
+#'  @param eps Coefficient ([0,1]) relating to minimum patch size (Default = 1). See Details
+#'  @param mu Number of immigrants needed for successful colonization (Default = 2). See Details
+#'  @param eta Scaling parameter (Default = 0.5). See Details
 #'  @param iterations Number of Monte Carlo iterations to run
 #'  @param seed Optional to set the seed for repeatability  among model runs (Default = NULL)
 #'
@@ -27,6 +30,9 @@
 #' dispersal,
 #' sd.dispersal,
 #' lower.upper_dispersal = c(lower=1, upper=Inf),
+#' eps = 1,
+#' mu = 2,
+#' eta = 0.5,
 #' iterations,
 #' seed=NULL)
 #'
@@ -42,11 +48,8 @@
 #' (4) \code{pct_immig}: Average percentage of a population that is comprised of immigrants; \cr
 #' (5) \code{pct_sink}: The frequency that a population acted as a sink (i.e. immigrants > philopatric) across all simulations; \cr
 #' (6) \code{pct_src}: The frequency that a population acted as a source (i.e. immigrant <= philopatric) across all simulations; \cr
-#' (7) \code{cont_lamb}: The contribution of each location to the metapopulation; \cr
-#' (8) \code{rank_cont}: The rank order importance of each location to the metapopulation; \cr
-#' (9) \code{delta_lam}: The change in the value of the the leading eigen value of the landscape matrix when each population is removed, which is interpreted as the metapopulation capacity. This is calculated as the log ratio of values [delta_lam = log(lambda.new / lambda.old)]; \cr
-#' (10) \code{rank_lamb}: The rank order importance of each location to metapopulation capacity; \cr
-#' (11) \code{avg_rank}: The rank importance of each potential location, determined by averaging \code{rank_cont} and \code{rank_lamb}.
+#' (7) \code{delt_mmlt}: Average change in the log of the metapopulation mean lifetime; \cr
+#' (8) \code{rank}: The rank order importance of each location based on the change in mmlt
 #'
 #' @export
 #'
@@ -66,9 +69,9 @@
 #'
 #' @examples
 #'    # Assess existing populations
-#'    site_results <- site.analysis(sites = site.dat[,1:3],
-#'    pop.abun = site.dat[,4:5],
-#'    met.size = site.dat[,6:7],
+#'    site_results <- site.analysis(sites = site.dat[,1:4],
+#'    pop.abun = site.dat[,5:6],
+#'    met.size = site.dat[,7:8],
 #'    prop.philo = 0.95,
 #'    sd.philo = 0.05,
 #'    lower.upper_philo=c(lower=0, upper=1),
@@ -78,11 +81,14 @@
 #'    dispersal = 25,
 #'    sd.dispersal = 10,
 #'    lower.upper_dispersal = c(lower=10, upper=Inf),
+#'    eps = 1,
+#'    mu = 2,
+#'    eta = 0.5,
 #'    iterations = 10,
 #'    seed = 123)
 
 
-site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3
+site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3, area in column 4
                           pop.abun, # Mean and sD for each pond
                           met.size=NULL, # Standardized mean and sd for each population
                           prop.philo=0.85,
@@ -94,15 +100,21 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3
                           dispersal,
                           sd.dispersal,
                           lower.upper_dispersal = c(lower=1, upper=Inf),
+                          eps = 1,
+                          mu = 2,
+                          eta = 0.5,
                           iterations,
                           seed=NULL){
   if(!is.null(seed)) {
     set.seed(seed)
   }
 
-  colnames(sites) <-  c('site','x','y')
+  colnames(sites) <-  c('site','x','y','area')
   colnames(pop.abun) <- c('mean.ab','sd')
-  colnames(met.size) <- c('svl.mean','svl.sd')
+
+  if(!is.null(met.size)){
+    colnames(met.size) <- c('svl.mean','svl.sd')
+  }
 
   # Process lower.upper values
   if(length(lower.upper_philo)!=2 |
@@ -124,7 +136,7 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3
   progress_bar$init(iterations)
 
   for(i in 1:iterations){
-    sample.seed <- sample(1:10e6, 1)
+    sample.seed <- sample(1:10e6, 1) + i
 
     # Get values for philopatry and mean dispersal from distribution
     p.philo <- rtnorm(1,prop.philo,sd.philo,lower = lower.upper_philo[[1]], upper = lower.upper_philo[[2]])
@@ -179,9 +191,12 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3
 
 
     # Philopatric total
+    e.mat_bin <- ifelse(e.mat==0, 0, 1)
     results <- data.frame(immig = colSums(e.mat),
                           philo = philo.emig[,3],
-                          emig = philo.emig[,4])
+                          emig = philo.emig[,4],
+                          in_deg = colSums(e.mat_bin),
+                          out_deg = rowSums(e.mat_bin))
 
     results <- results %>%
       mutate(pct_immig = ifelse(philo>0 & immig!=0, immig/(immig+philo),
@@ -193,21 +208,18 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3
 
 
     #~#~#~#~#~#~#~#~#~#
-    ## MODULARITY ##
-    # g <- graph.adjacency(e.mat,mode = "directed",weighted = T,diag = F)
-    # mod <- modularity(cluster_edge_betweenness(g,modularity = T))
 
-    ## METAPOPULATION ##
+    ## METAPOPULATION Mean Lifetime ##
+    mmlt <- MMLT(N = dim(e.mat)[1],
+                 S_i = results$immig,
+                 S_o = results$emig,
+                 eps = eps,
+                 A = sites$area,
+                 mu = mu,
+                 eta = eta)
 
-    # Get eigen values of emigrant matrix
-
-
-    # diag(e.mat) <- philo.emig$philo # Set diagonal to philopatric
-
-    tmp <- eigen(e.mat,symmetric = F)
-    lambda.M <- Re(tmp$value[1])
-    results$lambda <- Re(tmp$vector[, 1]^2)
-
+    # lam_c <- philo.emig$survive
+    # lam_M <- sum(lam_c * lam_c/sum(lam_c))
 
     ## Assess importance of each pond by omitting it
     for(j in 1:dim(connect.mat)[1]){
@@ -218,24 +230,28 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3
       set.seed(sample.seed)
       for (r in 1:nrow(connect.mat3)){
         p.e <- philo.emig[-j,]
+        S_i = results$immig[-j]
+        S_o = results$emig[-j]
+        A = sites$area[-j]
         e.mat2[r,] <- t(rmultinom(1,p.e[r,4],connect.mat3[r,]))
       }
 
-      # diag(e.mat2) <- p.e$philo # Set diagonal to philopatric
-      tmp <- eigen(e.mat2,symmetric = F)
-      lambda.M2 <- Re(tmp$value[1])
+      mmlt2 <- MMLT(N = dim(e.mat2)[1],
+                    S_i = S_i,
+                    S_o = S_o,
+                    eps = eps,
+                    A = A,
+                    mu = mu,
+                    eta = eta)
 
-      # Metapopulation capacity change
-      oldw <- getOption("warn")
-      options(warn = -1)
-      if(lambda.M2!=0 & lambda.M!=0) {
-        results$lambda_change[j] <- log((lambda.M2)/lambda.M)
-      } else if(lambda.M2 > lambda.M){
-        results$lambda_change[j] <- log(100)
-      } else {
-        results$lambda_change[j] <- log(100)*-1
-      }
-      options(warn = oldw)
+      # lam_c2 <- p.e$survive
+      # lam_M2 <- sum(lam_c2 * lam_c2/sum(lam_c2))
+
+      # MMLT Change
+      results$delt_mmlt[j] <- (mmlt2 - mmlt) / mmlt
+      # results$delt_mmlt[j] <- (log(mmlt2 + 1, 10) - log(mmlt + 1, 10)) / log(mmlt + 1, 10)
+      # results$delt_lam[j] <- (lam_M2 - lam_M)/lam_M
+
 
       # if(lambda.M==lambda.M2){
       #   results$lambda_change[j] <- 0
@@ -245,22 +261,6 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3
       #   results$lambda_change[j] <- log(100)*-1
       # } else {
       #   results$lambda_change[j] <- log((lambda.M2)/lambda.M)
-      # }
-
-      ## MODULARITY ##
-      # g2 <- graph.adjacency(e.mat2,mode = "directed",weighted = T,diag = F)
-      # mod2 <- modularity(cluster_edge_betweenness(g2,modularity = T))
-
-      # Change in modularity
-      # Metapopulation capacity change
-      # if(mod==mod2){
-      #   results$mod_change[j] <- 0
-      # } else if(mod==0 & mod2>0){
-      #   results$mod_change[j] <- log(100)
-      # } else if(mod==0 & mod2<0){
-      #   results$mod_change[j] <- log(100)*-1
-      # } else {
-      #   results$mod_change[j] <- log((mod2)/mod)
       # }
 
     } # End leave-one-out loop
@@ -276,11 +276,11 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3
   immig <- llply(results.list,function(x) x[,2])
   philo <- llply(results.list,function(x) x[,3])
   emig <- llply(results.list,function(x) x[,4])
-  pct_immig <- llply(results.list,function(x) x[,5])
-  sink <- llply(results.list,function(x) x[,6])
-  lambda_contrib <- llply(results.list,function(x) x[,7])
-  lambda_change <- llply(results.list, function(x) x[,8])
-  # mod_change <- llply(results.list, function(x) x[,9])
+  in_deg <- llply(results.list,function(x) x[,5])
+  out_deg <- llply(results.list,function(x) x[,6])
+  pct_immig <- llply(results.list,function(x) x[,7])
+  sink <- llply(results.list,function(x) x[,8])
+  delta_mmlt <- llply(results.list,function(x) x[,9])
 
   immig <- ldply(immig,rbind) %>%
     apply(.,2,mean,na.rm=T)
@@ -288,24 +288,18 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3
     apply(.,2,mean,na.rm=T)
   emig <- ldply(emig,rbind) %>%
     apply(.,2,mean,na.rm=T)
+  in_deg <- ldply(in_deg,rbind) %>%
+    apply(.,2,mean,na.rm=T)
+  out_deg <- ldply(out_deg,rbind) %>%
+    apply(.,2,mean,na.rm=T)
   pct_immig <- ldply(pct_immig,rbind) %>%
     apply(.,2,mean,na.rm=T)
   pct_sink <- ldply(sink,rbind) %>%
     apply(.,2,mean,na.rm=T)
-  lambda_cont <- ldply(lambda_contrib,rbind) %>%
+  delt_mmlt <- ldply(delta_mmlt,rbind) %>%
     apply(.,2,mean,na.rm=T)
-  # lambda_cont.sd <- ldply(lambda_contrib,rbind) %>%
-  # apply(.,2,sd,na.rm=T)
-  pc_lambda <- ldply(lambda_change,rbind) %>%
-    apply(.,2,mean,na.rm=T)
-  # delta_mod <- ldply(mod_change,rbind) %>%
-  # apply(.,2,mean,na.rm=T)
-  # sd_lambda <- ldply(lambda_change,rbind) %>%
-  # apply(.,2,sd,na.rm=T)
-  rank_lambda_cont <- rank(-lambda_cont)
-  rank_lambda_change <- rank(pc_lambda)
-  rank.df <- data.frame(rank_lambda_change, rank_lambda_cont)
-  avg_rank <- rank(apply(rank.df,1,mean), ties.method = 'min')
+
+  rank_mmlt <- rank(delt_mmlt, ties.method = 'min')
 
   out <- data.frame(site = sites[,1],
                     x = site.coords[,1],
@@ -313,17 +307,13 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3
                     immig = immig,
                     philo = philo,
                     emig = emig,
+                    in_deg = in_deg,
+                    out_deg = out_deg,
                     pct_immig=pct_immig,
                     pct_sink=pct_sink,
                     pct_src=1-pct_sink,
-                    # delta_mod=delta_mod,
-                    cont_lam=lambda_cont,
-                    # cont_sd=lambda_cont.sd,
-                    rank_cont=rank_lambda_cont,
-                    delta_lam=pc_lambda,
-                    # sd_lambda = sd_lambda,
-                    rank_lamb=rank_lambda_change,
-                    avg_rank=avg_rank
+                    delt_mmlt=delt_mmlt,
+                    rank=rank_mmlt
   )
 
   ss.results <- list(summary.df=out,
@@ -331,3 +321,61 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3
   return(ss.results)
 
 } # End function
+
+MMLT <- function(N, S_i, S_o, eps, A, mu, eta) {
+  # Equations from Kininmonth et al. 2010
+  # Extinction rate
+  Vi <- eps*(A^-eta) # eq 1
+  C_out <- S_o/mu # eq 4
+  C_in <- S_i/mu # eq 5
+  u_out <- C_out/Vi # eq 6
+  u_in <- C_in/Vi # eq 7
+
+  # Harmonic mean
+  Ui <- (.5*(u_in)^-2 + .5*(u_out)^-2)^-.5 # (Drechsler 2009 eq 8)
+  Ui[Ui<sqrt(2)] <- sqrt(2) # Take Ui or sqrt(2), whichever is larger
+
+  q <- prod(Ui^(1/N)) # eq 8 ()
+  v <- prod(Vi^(1/N)) # eq 9 (Geometric local extinction rates)
+
+  # Apply mmlt_fun (eq 10)
+  # if(q>2.5 & N>150){
+    # MMLT <- N*((1/q) + log(q) - 1)
+    MMLT <- N*((1/q) + log(q) - 1) # Eq 12
+    MMLT <- log((exp(MMLT)/v) + 1,10)
+    MMLT <- ifelse(is.infinite(MMLT),NA, MMLT)
+
+    # Requiring factorial limits size of network that can be analyzed
+    # MMLT <- (1/v)*exp((N/q)) * ((factorial(N-1))/(N*(N-1)^(N-1)))*(q)^(N-1) # Eq 6 F&W
+
+    # log_MMLT <- log(MMLT)
+    # return(log_MMLT)
+    return(MMLT)
+  # } else {
+  #   MMLT <- (1/v)*sum(outer(1:N, 1:N, mmlt_fun,q,N))
+  #   log_MMLT <- log(MMLT)
+  #   return(log_MMLT)
+  # }
+}
+#!#!#!#!#!#!#!
+# Compliments of Grant Connette...nearly 100x faster
+mmlt_fun <- function(i,k,q,N){(1/k * (factorial(N-i)/factorial(N-k)) * (1/(N-1)^(k-i)) * q^(k-i))}
+
+
+# Dan <- function() {
+# mmlt_fun <- function(x) {
+#   mmlt <- (1/x["k"] * (factorial(x["N"]-x["i"])/factorial(x["N"]-x["k"])) * (1/(x["N"]-1)^(x["k"]-x["i"])) * x["q"]^(x["k"]-x["i"]))
+# }
+#
+#   vec <- apply(df, MARGIN = 1, FUN = mmlt_fun)
+#   MMLT <- (1/v) * sum(vec)
+#   log(MMLT)
+#
+# }
+
+# Dan's function
+mmlt_fun2 <- function(x) {
+  mmlt <- (1/x["k"] * (gamma(as(x["N"]-x["i"],'mpfr'))/gamma(as(x["N"]-x["k"],'mpfr'))) * (1/(x["N"]-1)^(x["k"]-x["i"])) * x["q"]^(x["k"]-x["i"]))
+  return(mmlt)
+}
+

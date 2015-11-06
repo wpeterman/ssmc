@@ -2,29 +2,18 @@
 % Please edit documentation in R/extract_sort_results.R
 \name{ssmc_summary}
 \alias{ssmc_summary}
-\title{A function to extract the summary data from \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}} functions and sort by a specified rank column}
+\title{A function to extract the summary data from \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}} functions}
 \usage{
-ssmc_summary(ssmc_results,
-sort)
+ssmc_summary(ssmc_results)
 }
 \arguments{
 \item{ssmc_results}{Output object from \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}}}
-
-\item{sort}{The rank summary to sort the results by. See Details for valid values}
 }
 \value{
-This function returns a data frame of the summarized results from either the \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}} functions that is sorted by the specified column.
+This function returns a data frame of the summarized results from either the \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}} sorted by the specified column.
 }
 \description{
-A function to extract the summary data from \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}} functions and sort by a specified rank column
-}
-\details{
-Valid columns to sort by include: \cr
-\tabular{ll}{
-   \tab 'rank_cont'\cr
-   \tab 'rank_lamb'\cr
-   \tab 'avg_rank'\cr
-   }
+A function to extract the summary data from \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}} functions
 }
 \examples{
 # Assess potential new locations
@@ -44,8 +33,7 @@ Valid columns to sort by include: \cr
    iterations = 10,
    seed = 123)
 
-   # Sort by a location's contribution to lambda ('rank_cont')
-   best_cont <- ssmc_summary(best_results, 'rank_cont')
+   best_locales <- ssmc_summary(best_results)
 }
 \author{
 Bill Peterman <Peterman.73@osu.edu>

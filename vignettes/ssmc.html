@@ -10,7 +10,7 @@
 
 <meta name="author" content="Bill Peterman" />
 
-<meta name="date" content="2015-09-29" />
+<meta name="date" content="2015-11-05" />
 
 <title>ssmc User Guide</title>
 
@@ -72,7 +72,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="header">
 <h1 class="title">ssmc User Guide</h1>
 <h4 class="author"><em>Bill Peterman</em></h4>
-<h4 class="date"><em>2015-09-29</em></h4>
+<h4 class="date"><em>2015-11-05</em></h4>
 </div>
 
 
@@ -96,12 +96,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li>Determine probability of dispersal (see ‘Calculating diserpsal’ below)</li>
 <li>Determine the number of individuals dispersing between populations</li>
-<li>Determine the contribution and influence of each pond to the metapopuation</li>
+<li>Determine the contribution and influence of each pond to the mean metapopuation lifetime</li>
 <li>Repeat steps 1–4 for the specified number of Monte Carlo iterations</li>
 </ol>
 <p>Each of the above stochastic variables is drawn from a normal distribution with a mean and standard deviation that is specified based on your system. At each Monte Carlo iteration, different values are drawn.</p>
-<p>After all iterations are complete, the ratio of immigrant:philopatric (<span class="math inline">\(\frac{i}{p}\)</span>) individuals is assessed. If <span class="math inline">\(\frac{i}{p}&gt;1\)</span>, the population is considered a sink, if <span class="math inline">\(\frac{i}{p} \leqslant 1\)</span> the population is considered a source. This evaluation is made for each iteration, and the frequency at which a population acts as a source or sink is evaluated. Additionally, the average number of emigrants, immigrants, and philopatric individuals is determined for each population, as well as the average contribution of each population to the metapopulation.</p>
-<p><sup><strong>+</strong></sup> The size of metamorphs, if specified, is used to determine the population-specific probability of survival to adulthood using the equation: <span class="math display">\[logit(survival) = -1.366 + 0.87 * size,\]</span> If metamorph size is not provided, then survival probability is drawn from distribution and will be uniform across all populations. The above equation come from Altwegg &amp; Reyer (<a href="http://onlinelibrary.wiley.com/doi/10.1111/j.0014-3820.2003.tb00298.x/abstract" title="Link to paper">2003</a>)</p>
+<p>After all iterations are complete, the ratio of immigrant:philopatric (<span class="math inline">\(\frac{i}{p}\)</span>) individuals is assessed. If <span class="math inline">\(\frac{i}{p}&gt;1\)</span>, the population is considered a sink, if <span class="math inline">\(\frac{i}{p} \leqslant 1\)</span> the population is considered a source. This evaluation is made for each iteration, and the frequency at which a population acts as a source or sink is then determined Additionally, the average number of emigrants, immigrants, and philopatric individuals is determined for each population, as well as the change in mean metapopulation lifetime when each population is removed.</p>
+<p><sup><strong>+</strong></sup> The size of metamorphs, if specified, is used to determine the population-specific probability of survival to adulthood using the equation: <span class="math display">\[logit(survival) = -1.366 + 0.87 * size,\]</span> If metamorph size is not provided, then survival probability is drawn from a distribution and will be uniform across all populations. The above equation comes from Altwegg &amp; Reyer (<a href="http://onlinelibrary.wiley.com/doi/10.1111/j.0014-3820.2003.tb00298.x/abstract" title="Link to paper">2003</a>)</p>
 </div>
 <div id="calculating-dispersal" class="section level3">
 <h3>Calculating dispersal</h3>
@@ -119,9 +119,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Values <span class="math inline">\(n_{ij}\)</span> are components of the landscape matrix <span class="math inline">\(\mathrm{M}_{ij}\)</span>. Summing across columns, <span class="math inline">\(j\)</span>, of matrix <strong>M</strong> gives the total number of emigrants leaving population <span class="math inline">\(i\)</span>, while summing across rows, <span class="math inline">\(i\)</span>, gives the total number of immigrants entering population <span class="math inline">\(j\)</span>.</p>
 <p><span class="math display">\[emigrants_i = \sum_{n=1}^{j} \mathrm{M}_{ij} \]</span> <span class="math display">\[immigrants_j = \sum_{n=1}^{i} \mathrm{M}_{ij} \]</span></p>
 </div>
-<div id="determining-contribution-to-the-metapopulation" class="section level3">
-<h3>Determining contribution to the metapopulation</h3>
-<p>Metapopulation capacity, as defined by Hanski &amp; Ovaskainen (<a href="http://www.nature.com/nature/journal/v404/n6779/full/404755a0.html&quot;Link%20to%20paper&quot;">2000</a>), is a measure that encompasses the arrangement of habitat patches as well as the size of those patches. Size is used as a proxy for population carrying capacity, which is replaced with estimated abundance in the model formulation of <code>ssmc</code>. Following Hanski &amp; Ovaskainen (<a href="http://www.nature.com/nature/journal/v404/n6779/full/404755a0.html&quot;Link%20to%20paper&quot;">2000</a>), we assess the metapopulation capacity, <span class="math inline">\(\lambda_\mathrm{M}\)</span>, which is the leading eigen-value of landscape matrix <strong>M</strong>. The individual contributions of each population, <span class="math inline">\(i\)</span>, to <span class="math inline">\(\lambda_\mathrm{M}\)</span> is <span class="math display">\[\lambda_i \equiv x_{i}^{2} \lambda_\mathrm{M},\]</span> where <span class="math inline">\(x_i\)</span> is the <span class="math inline">\(i\)</span>th element in the leading eigenvector of the landscape matrix <strong>M</strong>. As such, <span class="math inline">\(\lambda_i\)</span> measures the contribution of each population to metapopulation capacity. The importance of population <span class="math inline">\(i\)</span> can be further assessed by removing it from the metapopulation network and recalculating <span class="math inline">\(\lambda_\mathrm{M}\)</span>. Alternatively, it is possible to assess the contribution of newly created habtiat to the metapopulation by adding new population <span class="math inline">\(i\)</span> to the network. This is what the functions <code>site.analysis</code> and <code>best.locale</code> of the R package <code>ssmc</code> seek to do.</p>
+<div id="determining-effect-on-metapopulation-mean-lifetime-mmlt" class="section level3">
+<h3>Determining effect on Metapopulation Mean Lifetime (MMLT)</h3>
+<p>Metapopulation Mean Lifetime is a global measure that represents the persistance or viability of a metapopulation (Drechsler <a href="http://www.sciencedirect.com/science/article/pii/S0025556408002046">2009</a>), and was adapted from work by Frank &amp; Wissel (<a href="http://link.springer.com/article/10.1023%2FA%3A1008054906030">1998</a>, <a href="http://www.jstor.org/stable/info/10.1086/428293">2002</a>). MMLT has been further adapted by Kininmonth et al. (<a href="http://www.int-res.com/abstracts/meps/v417/p139-149/">2010</a>) for applications with graph theory. This framework approach is sensitive to network topology, specifically spatial locations and size of populations. Calculation of MMLT is as follows: First an extintion rate <span class="math inline">\(v_i\)</span> is calculated as: <span class="math display">\[v_i = \varepsilon A_{i}^{-\eta} ,\]</span> where <span class="math inline">\(\varepsilon\)</span> (default = 1) and <span class="math inline">\(\eta\)</span> (default = 0.5) are parameters relating the local extinction rate to patch area, <span class="math inline">\(A\)</span>. Then, based on in-degree (<span class="math inline">\(immigrants_i\)</span>) and out-degree (<span class="math inline">\(emigrants_i\)</span>) edge weights from the network graph, <span class="math inline">\(C_i^{(in)}\)</span> (colonizability) and <span class="math inline">\(C_i^{(out)}\)</span> (colonization strength) are calculated: <span class="math display">\[C_i^{(in)} = immigrants_i\]</span> <span class="math display">\[C_i^{(out)} = emigrants_i\]</span></p>
+<p>Colonizability and colonization strength are then multiplied by the expected lifetime of a patch, <span class="math inline">\(1/v_i\)</span>.</p>
+<p><span class="math display">\[u_i^{(out)} = \frac {C_i^{(out)}}{v_i}\]</span> <span class="math display">\[u_i^{(in)} = \frac {C_i^{(in)}}{v_i}.\]</span></p>
+<p>The colonization-extinction ratio of patch <span class="math inline">\(i\)</span> is the harmonic mean of <span class="math inline">\(u_i^{(out)}\)</span> and <span class="math inline">\(u_i^{(in)}\)</span>: <span class="math display">\[U_i = (\frac{1}{2}(u_i^{(in)})^{-2} + \frac {1}{2}(u_i^{(out)})^{-2})^\frac {-1}{2},\]</span></p>
+<p>which is then aggregated for the entire network: <span class="math display">\[q = \prod_{i=1}^{N} \{\mathrm{max}(U_i, \sqrt{2})\}^{1/N}.\]</span></p>
+<p>The local extinction rates, <span class="math inline">\(v_i\)</span>, are also aggregated as a geometric mean: <span class="math display">\[v = \prod_{i=1}^{N} v_i^{1/N}.\]</span></p>
+<p>The metapopulation mean lifetime is then: <span class="math display">\[T = \frac {1}{v} \sum_{i=1}^{N} \sum_{k=1}^{N} \frac {1}{k} \frac{(N - i)!}{(N - k)!} \frac {1}{(N - 1)^{k-1}}q^{k-1}.\]</span></p>
+<p>However, because of the large number of patches likely to be used with this approach, the approximating equation of Drechsler (<a href="http://www.sciencedirect.com/science/article/pii/S0025556408002046">2009</a>) <span class="math display">\[ln(vT) \approx N(\frac {1}{q} + ln(q)-1).\]</span></p>
+<p>is a measure sensitive to Size is used as a proxy for population carrying capacity, which is replaced with estimated abundance in the model formulation of <code>ssmc</code>. Following Hanski &amp; Ovaskainen (<a href="http://www.nature.com/nature/journal/v404/n6779/full/404755a0.html&quot;Link%20to%20paper&quot;">2000</a>), we assess the metapopulation capacity, <span class="math inline">\(\lambda_\mathrm{M}\)</span>, which is the leading eigen-value of landscape matrix <strong>M</strong>. The individual contributions of each population, <span class="math inline">\(i\)</span>, to <span class="math inline">\(\lambda_\mathrm{M}\)</span> is <span class="math display">\[\lambda_i \equiv x_{i}^{2} \lambda_\mathrm{M},\]</span> where <span class="math inline">\(x_i\)</span> is the <span class="math inline">\(i\)</span>th element in the leading eigenvector of the landscape matrix <strong>M</strong>. As such, <span class="math inline">\(\lambda_i\)</span> measures the contribution of each population to metapopulation capacity. The importance of population <span class="math inline">\(i\)</span> can be further assessed by removing it from the metapopulation network and recalculating <span class="math inline">\(\lambda_\mathrm{M}\)</span>. Alternatively, it is possible to assess the contribution of newly created habtiat to the metapopulation by adding new population <span class="math inline">\(i\)</span> to the network. This is what the functions <code>site.analysis</code> and <code>best.locale</code> of the R package <code>ssmc</code> seek to do.</p>
 </div>
 </div>
 <div id="setup" class="section level2">
@@ -149,47 +157,49 @@ if(!(<span class="st">&quot;devtools&quot;</span> %in%<span class="st"> </span><
 <h4>Assessing the source-sink status and importance of populations to the metapopulation</h4>
 <p>The <code>ssmc</code> package comes with a simulted sample data set called <code>site.dat</code>. After loading the <code>ssmc</code> package, you can explore the structure and format of the data file.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(site.dat)</code></pre></div>
-<pre><code>## 'data.frame':    25 obs. of  7 variables:
+<pre><code>## 'data.frame':    25 obs. of  8 variables:
 ##  $ site    : int  1 2 3 4 5 6 7 8 9 10 ...
-##  $ x       : num  25.1 93.5 32.3 45.2 96.2 ...
-##  $ y       : num  0.435 0.783 0.192 0.301 0.572 ...
-##  $ ab.mean : num  0 76.5 0 204.4 241.3 ...
-##  $ ab.sd   : num  0 5.4825 0 1.5547 0.0809 ...
-##  $ svl.mean: num  1.057 0.4552 -0.4095 0.0623 -0.9316 ...
-##  $ svl.sd  : num  0.369 1.363 1.402 0.721 0.802 ...</code></pre>
+##  $ x       : num  17.1 13.1 82 15.5 53.3 ...
+##  $ y       : num  0.0656 0.1824 0.4946 0.38 0.0204 ...
+##  $ A       : num  74.5 15.9 48.9 74.2 68.4 ...
+##  $ ab.mean : num  0 67.6 0 0 0 ...
+##  $ ab.sd   : num  0 15.1 0 0 0 ...
+##  $ svl.mean: num  -0.19 -0.783 -0.551 1.381 -0.132 ...
+##  $ svl.sd  : num  0.188 0.012 0.905 0.185 0.847 ...</code></pre>
 <p>There are seven variables included in the data frame. This format is not essential to using the functions of <code>ssmc</code>, as paramter values are individually specified for each function.</p>
 <p>To assess source-sink status of existing populations, use the <code>site.analysis</code> function. Following the example provided in the help documentation, run the function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">site_results &lt;-<span class="st"> </span><span class="kw">site.analysis</span>(<span class="dt">sites =</span> site.dat[,<span class="dv">1</span>:<span class="dv">3</span>],
-                              <span class="dt">pop.abun =</span> site.dat[,<span class="dv">4</span>:<span class="dv">5</span>],
-                              <span class="dt">met.size =</span> site.dat[,<span class="dv">6</span>:<span class="dv">7</span>],
-                              <span class="dt">prop.philo =</span> <span class="fl">0.95</span>,   
-                              <span class="dt">sd.philo =</span> <span class="fl">0.05</span>,
-                              <span class="dt">lower.upper_philo=</span><span class="kw">c</span>(<span class="dt">lower=</span><span class="dv">0</span>, <span class="dt">upper=</span><span class="dv">1</span>),
-                              <span class="dt">lower.upper_survive =</span> <span class="kw">c</span>(<span class="dt">lower=</span><span class="dv">0</span>, <span class="dt">upper=</span><span class="dv">1</span>),
-                              <span class="dt">dispersal =</span> <span class="dv">25</span>,
-                              <span class="dt">sd.dispersal =</span> <span class="dv">10</span>,
-                              <span class="dt">lower.upper_dispersal =</span> <span class="kw">c</span>(<span class="dt">lower=</span><span class="dv">10</span>, <span class="dt">upper=</span><span class="ot">Inf</span>),
-                              <span class="dt">iterations =</span> <span class="dv">5</span>,
-                              <span class="dt">seed =</span> <span class="dv">123</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">    site_results &lt;-<span class="st"> </span><span class="kw">site.analysis</span>(<span class="dt">sites =</span> site.dat[,<span class="dv">1</span>:<span class="dv">4</span>],
+                                  <span class="dt">pop.abun =</span> site.dat[,<span class="dv">5</span>:<span class="dv">6</span>],
+                                  <span class="dt">met.size =</span> site.dat[,<span class="dv">7</span>:<span class="dv">8</span>],
+                                  <span class="dt">prop.philo =</span> <span class="fl">0.95</span>,
+                                  <span class="dt">sd.philo =</span> <span class="fl">0.05</span>,
+                                  <span class="dt">lower.upper_philo=</span><span class="kw">c</span>(<span class="dt">lower=</span><span class="dv">0</span>, <span class="dt">upper=</span><span class="dv">1</span>),
+                                  <span class="dt">lower.upper_survive =</span> <span class="kw">c</span>(<span class="dt">lower=</span><span class="dv">0</span>, <span class="dt">upper=</span><span class="dv">1</span>),
+                                  <span class="dt">dispersal =</span> <span class="dv">25</span>,
+                                  <span class="dt">sd.dispersal =</span> <span class="dv">10</span>,
+                                  <span class="dt">lower.upper_dispersal =</span> <span class="kw">c</span>(<span class="dt">lower=</span><span class="dv">10</span>, <span class="dt">upper=</span><span class="ot">Inf</span>),
+                                  <span class="dt">eps =</span> <span class="dv">1</span>,
+                                  <span class="dt">mu =</span> <span class="dv">2</span>,
+                                  <span class="dt">eta =</span> <span class="fl">0.5</span>,
+                                  <span class="dt">iterations =</span> <span class="dv">10</span>,
+                                  <span class="dt">seed =</span> <span class="dv">123</span>)</code></pre></div>
 <p>The results of <code>site.analysis</code> contain both a summary data frame as well as the raw data from each Monte Carlo iteration. The summary data frame can be exported and sorted based on the desired rank criteria using the <code>ssmc_summary</code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">site_summary &lt;-<span class="st"> </span><span class="kw">ssmc_summary</span>(<span class="dt">ssmc_results =</span> site_results,
-                             <span class="dt">sort =</span> <span class="st">&quot;avg_rank&quot;</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">site_summary &lt;-<span class="st"> </span><span class="kw">ssmc_summary</span>(<span class="dt">ssmc_results =</span> site_results)
 <span class="kw">str</span>(site_summary)</code></pre></div>
-<pre><code>## 'data.frame':    25 obs. of  14 variables:
-##  $ site     : int  8 19 18 23 15 1 5 17 20 24 ...
-##  $ x        : num  70.83 78.16 7.29 90.49 5.47 ...
-##  $ y        : num  0.437 0.925 0.804 0.915 0.518 ...
-##  $ immig    : num  0.4 0.8 0.8 1.8 0.4 1.2 0.6 0.8 0.8 1.6 ...
-##  $ philo    : num  34 38 51 27 54.4 0 40.6 8.8 0 3.6 ...
-##  $ emig     : num  4 3.6 3.6 1.6 4.2 0 1.4 0.6 0 0 ...
-##  $ pct_immig: num  0.01333 0.02207 0.01695 0.06319 0.00731 ...
-##  $ pct_sink : num  0 0 0 0 0 1 0 0 1 0.2 ...
-##  $ pct_src  : num  1 1 1 1 1 0 1 1 0 0.8 ...
-##  $ cont_lam : num  0.1986 0.0851 0.0368 0.0108 0.0098 ...
-##  $ rank_cont: num  2 3 4 7 8 1 6 9 18.5 18.5 ...
-##  $ delta_lam: num  -3.45 -3.28 -2.7 -4.61 -2.66 ...
-##  $ rank_lamb: num  2 3 4 1 6 19 14 13 5 7 ...
-##  $ avg_rank : int  1 2 3 3 5 6 6 8 9 10 ...</code></pre>
+<pre><code>## 'data.frame':    25 obs. of  13 variables:
+##  $ site     : int  20 16 14 12 13 7 24 15 25 10 ...
+##  $ x        : num  28.69 38.95 42.08 4.33 58.1 ...
+##  $ y        : num  0.949 0.462 0.457 0.744 0.246 ...
+##  $ immig    : num  1.1 0.8 1 1.2 0.9 1.2 1.2 1.1 0.9 0.8 ...
+##  $ philo    : num  58.6 86.3 8.4 13.3 17.2 5 8.6 79.6 6.4 8.8 ...
+##  $ emig     : num  3.6 4.7 1.1 0.9 1 0.4 0.4 5.4 0.1 0.2 ...
+##  $ in_deg   : num  0.9 0.8 0.7 1.1 0.9 1.2 1 1 0.8 0.8 ...
+##  $ out_deg  : num  3.3 4 1 0.9 0.9 0.4 0.4 4.6 0.1 0.2 ...
+##  $ pct_immig: num  0.0209 0.0169 0.0996 0.0787 0.0573 ...
+##  $ pct_sink : num  0 0 0 0 0 0.2 0.1 0 0 0.3 ...
+##  $ pct_src  : num  1 1 1 1 1 0.8 0.9 1 1 0.7 ...
+##  $ delt_mmlt: num  -0.0867 -0.0623 -0.0492 -0.0439 -0.0426 ...
+##  $ rank     : int  1 2 3 4 5 6 7 8 9 10 ...</code></pre>
 <p>It is possible to sort the summary data frame using one of the three rank variables generated during the simulation:</p>
 <ol style="list-style-type: decimal">
 <li>‘rank_cont’: Populations are ranked based on their average contribution, <span class="math inline">\(\lambda_i\)</span>, to metapopulation capacity</li>
@@ -204,11 +214,9 @@ if(!(<span class="st">&quot;devtools&quot;</span> %in%<span class="st"> </span><
 <li><code>pct_immig</code>: Average percentage of a population that is comprised of immigrants</li>
 <li><code>pct_sink</code>: The frequency that a population acted as a sink (i.e. <span class="math inline">\(\frac{i}{p} &gt; 1\)</span>) across all simulations</li>
 <li><code>pct_src</code>: The frequency that a population acted as a source (i.e. <span class="math inline">\(\frac{i}{p} \leqslant 1\)</span>) across all simulations</li>
-<li><code>cont_lamb</code>: The contribution of each location to the metapopulation (<span class="math inline">\(\lambda_i\)</span>)</li>
-<li><code>rank_cont</code>: The rank order importance of each location to the metapopulation</li>
-<li><code>delta_lam</code>: The change in the value of the the leading eigen value of the connectivity matrix when population <span class="math inline">\(i\)</span> is removed, which is interpreted as the metapopulation capacity. This is calculated as the log ratio of values <span class="math inline">\(\Delta \lambda_\mathrm{M} = log(lambda.new / lambda.old)\)</span></li>
-<li><code>rank_lamb</code>: The rank order importance of each location to metapopulation capacity;</li>
-<li><code>avg_rank</code>: The rank importance of each potential location, determined by averaging <code>rank_cont</code> and <code>rank_lamb</code></li>
+<li><code>delta_mmt</code>: The change in metapopulation mean lifetime when population <span class="math inline">\(i\)</span> is removed. This is calculated as: <span class="math display">\[\Delta \mathrm{MMLT} = (log_{10}(\mathrm{MMLT.new} + 1) - log_{10}(\mathrm{MMLT.old} + 1)) / log_{10}(\mathrm{MMLT.old} + 1)\]</span><br />
+</li>
+<li><code>rank</code>: The rank order importance of each location as determined by <span class="math inline">\(\Delta \mathrm{MMLT}\)</span></li>
 </ol>
 <p><strong>Comments on using <code>site.analysis</code></strong></p>
 <ol style="list-style-type: decimal">
@@ -222,10 +230,10 @@ if(!(<span class="st">&quot;devtools&quot;</span> %in%<span class="st"> </span><
 <div id="assessing-the-potential-of-a-new-or-restored-population-to-contribute-to-the-metapopulation" class="section level4">
 <h4>Assessing the potential of a new or restored population to contribute to the metapopulation</h4>
 <p>The use of the <code>best.locale</code> function is identical to <code>site.analysis</code> except that a data frame of potential sites is provided to be evaluated as part of the metapopulation network. <code>potential.dat</code> is provided with the package as an example of a potential location data frame.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">best_results &lt;-<span class="st"> </span><span class="kw">best.locale</span>(<span class="dt">sites =</span> site.dat[,<span class="dv">1</span>:<span class="dv">3</span>],
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">best_results &lt;-<span class="st"> </span><span class="kw">best.locale</span>(<span class="dt">sites =</span> site.dat[,<span class="dv">1</span>:<span class="dv">4</span>],
                             <span class="dt">potential.sites =</span> potential.dat,
-                            <span class="dt">pop.abun =</span> site.dat[,<span class="dv">4</span>:<span class="dv">5</span>],
-                            <span class="dt">met.size =</span> site.dat[,<span class="dv">6</span>:<span class="dv">7</span>],
+                            <span class="dt">pop.abun =</span> site.dat[,<span class="dv">5</span>:<span class="dv">6</span>],
+                            <span class="dt">met.size =</span> site.dat[,<span class="dv">7</span>:<span class="dv">8</span>],
                             <span class="dt">prop.philo =</span> <span class="fl">0.95</span>,
                             <span class="dt">sd.philo =</span> <span class="fl">0.05</span>,
                             <span class="dt">lower.upper_philo=</span><span class="kw">c</span>(<span class="dt">lower=</span><span class="dv">0</span>, <span class="dt">upper=</span><span class="dv">1</span>),
@@ -233,27 +241,32 @@ if(!(<span class="st">&quot;devtools&quot;</span> %in%<span class="st"> </span><
                             <span class="dt">dispersal =</span> <span class="dv">25</span>,
                             <span class="dt">sd.dispersal =</span> <span class="dv">10</span>,
                             <span class="dt">lower.upper_dispersal =</span> <span class="kw">c</span>(<span class="dt">lower=</span><span class="dv">10</span>, <span class="dt">upper=</span><span class="ot">Inf</span>),
-                            <span class="dt">iterations =</span> <span class="dv">5</span>,
+                            <span class="dt">eps =</span> <span class="dv">1</span>,
+                            <span class="dt">mu =</span> <span class="dv">2</span>,
+                            <span class="dt">eta =</span> <span class="fl">0.5</span>,
+                            <span class="dt">iterations =</span> <span class="dv">10</span>,
                             <span class="dt">seed =</span> <span class="dv">123</span>)</code></pre></div>
 <p>At each Monte Carlo iteration, the function evaluates the contribution of each potential location in contributing to <span class="math inline">\(\lambda_i\)</span> as well as the metapopulation capacity, <span class="math inline">\(\lambda_\mathrm{M}\)</span>, of the network with the population included. Because these are hpothetical populations with no abundance, size, or survival parameters, these parameters are set to the mean value of all non-zero populations for that iteration of the analysis. As such, each potential location is evaluated as if it were an ‘average’ population on the landscape.</p>
 <p>The output from the <code>best.locale</code> analysis is similar to that of <code>site.analysis</code> and the summary data frame can again be extracted and sorted using <code>ssmc_summary</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">best_summary &lt;-<span class="st"> </span><span class="kw">ssmc_summary</span>(<span class="dt">ssmc_results =</span> best_results,
-                             <span class="dt">sort =</span> <span class="st">&quot;avg_rank&quot;</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">best_summary &lt;-<span class="st"> </span><span class="kw">ssmc_summary</span>(<span class="dt">ssmc_results =</span> best_results)
 <span class="kw">str</span>(best_summary)</code></pre></div>
 <pre><code>## 'data.frame':    25 obs. of  8 variables:
-##  $ site     : int  6 1 12 16 2 10 14 15 17 18 ...
-##  $ x        : num  99.42 25.45 6.64 34.05 62.17 ...
-##  $ y        : num  6.05 75.19 55.1 74.65 53.28 ...
-##  $ cont_lam : num  0.0207 0.2007 0.2007 0.2007 0.2007 ...
-##  $ rank_cont: num  9 2.5 2.5 2.5 2.5 14 14 14 14 14 ...
-##  $ lambda   : num  2.12 1.88 1.88 1.88 1.5 ...
-##  $ rank_lamb: num  3 13 13 13 17 6.5 6.5 6.5 6.5 6.5 ...
-##  $ avg_rank : int  1 2 2 2 5 6 6 6 6 6 ...</code></pre>
+##  $ site    : int  5 3 11 13 25 24 9 21 4 8 ...
+##  $ x       : num  16.3 55.2 61.4 76.8 48.8 ...
+##  $ y       : num  15.02 10.38 43.19 8.55 20.7 ...
+##  $ mmlt    : num  0.436 0.428 0.422 0.422 0.42 ...
+##  $ rank    : num  1 2 3 4 5 6 7 8 9 10 ...
+##  $ frq_col : num  0.4 0.3 0.2 0.3 0.1 0.2 0.2 0.2 0.2 0.2 ...
+##  $ mmlt_col: num  0.1745 0.1285 0.0844 0.1266 0.042 ...
+##  $ rank_adj: num  1 2 4 3 11 5 6 7 8 9 ...</code></pre>
 </div>
 <div id="citations" class="section level3">
 <h3>Citations</h3>
 <p>Altwegg, R., and H.-U. Reyer. 2003. Patterns of natural selection on size at metamorphosis in water frogs. Evolution 57:872–882.</p>
-<p>Hanski, I., and O. Ovaskainen. 2000. The metapopulation capacity of a fragmented landscape. Nature 404:755–758.</p>
+<p>Drechsler, M. 2009. Predicting metapopulation lifetime from macroscopic network properties. Mathematical Biosciences 218:59–71.</p>
+<p>Frank, K., and C. Wissel. 1998. Spatial aspects of metapopulation survival – from model results to rules of thumb for landscape management. Landscape Ecology 13:363–379.</p>
+<p>Frank, K., and C. Wissel. 2002. A formula for the mean lifetime of metapopulations in heterogeneous landscapes. The American Naturalist 159:530–552.</p>
+<p>Kininmonth, S., M. Drechsler, K. Johst, and H. P. Possingham. 2010. Metapopulation mean life time within complex networks. Marine Ecology Progress Series 417:139–149.</p>
 </div>
 </div>
 

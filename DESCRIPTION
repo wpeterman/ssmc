@@ -1,7 +1,7 @@
 Package: ssmc
 Type: Package
 Title: Assess source-sink population status using Monte Carlo simulation
-Version: 0.1.0
+Version: 0.1.1
 Author: Bill Peterman
 Maintainer: Bill Peterman <Peterman.73@osu.edu>
 Description: This package provides functions to conduct Monte Carlo simulations of demographic connectivity models. These functions can assess the contributions and importance of existing populations and can also assess the potential contributions of populations following habitat creation or restoration.

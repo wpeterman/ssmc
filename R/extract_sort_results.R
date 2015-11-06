@@ -1,25 +1,18 @@
-#'  A function to extract the summary data from \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}} functions and sort by a specified rank column
+#'  A function to extract the summary data from \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}} functions
 #'
 #'  @param ssmc_results Output object from \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}}
-#'  @param sort The rank summary to sort the results by. See Details for valid values
 #'
-#'  @usage ssmc_summary(ssmc_results,
-#' sort)
+#'  @usage ssmc_summary(ssmc_results)
 #'
 #' @author Bill Peterman <Peterman.73@@osu.edu>
 #'
-#' @return This function returns a data frame of the summarized results from either the \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}} functions that is sorted by the specified column.
+#' @return This function returns a data frame of the summarized results from either the \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}} sorted by the specified column.
 #'
 #' @export
 #'
-#' @details Valid columns to sort by include: \cr
-#' \tabular{ll}{
-#'    \tab 'rank_cont'\cr
-#'    \tab 'rank_lamb'\cr
-#'    \tab 'avg_rank'\cr
-#'    }
+
 #'
-#'    @usage ssmc_summary(ssmc_results, sort)
+#'    @usage ssmc_summary(ssmc_results)
 #'
 #'    @examples
 #'    # Assess potential new locations
@@ -39,11 +32,16 @@
 #'    iterations = 10,
 #'    seed = 123)
 #'
-#'    # Sort by a location's contribution to lambda ('rank_cont')
-#'    best_cont <- ssmc_summary(best_results, 'rank_cont')
+#'    best_locales <- ssmc_summary(best_results)
 
-ssmc_summary <- function(ssmc_results,
-                         sort) {
-  out <- arrange_(ssmc_results$summary.df, sort)
+ssmc_summary <- function(ssmc_results, ...) {
+  dots <- list(...)                   #1
+  if(length(dots) == 0) {
+    sort.by <- 'rank'
+  } else {
+    sort.by <- dots[[1]]
+  }
+
+  out <- arrange_(ssmc_results$summary.df, sort.by)
   return(out)
 }
