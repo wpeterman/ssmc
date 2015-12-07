@@ -60,6 +60,29 @@ best_results <- best.locale(sites = site.dat[,1:4],
                             seed = 123)
 
 ## ------------------------------------------------------------------------
-best_summary <- ssmc_summary(ssmc_results = best_results)
+best_summary <- ssmc_summary(ssmc_results = best_results, 'rank_adj')
 str(best_summary)
+
+## ----results='hide',message=FALSE, warning=FALSE-------------------------
+restore_results <- best.locale(sites = site.dat[,1:4],
+                               restore = TRUE,
+                               potential.sites = potential.dat,
+                               pop.abun = site.dat[,5:6],
+                               met.size = site.dat[,7:8],
+                               prop.philo = 0.95,
+                               sd.philo = 0.05,
+                               lower.upper_philo=c(lower=0, upper=1),
+                               lower.upper_survive = c(lower=0, upper=1),
+                               dispersal = 25,
+                               sd.dispersal = 10,
+                               lower.upper_dispersal = c(lower=10, upper=Inf),
+                               eps = 1,
+                               mu = 2,
+                               eta = 0.5,
+                               iterations = 10,
+                               seed = 123)
+
+## ------------------------------------------------------------------------
+restore_summary <- ssmc_summary(ssmc_results = restore_results, 'rank_adj')
+str(restore_summary)
 

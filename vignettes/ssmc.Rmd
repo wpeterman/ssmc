@@ -21,7 +21,7 @@ The functions found in this package were originally developed as part of researc
 
 
 ### Modeling process
-There 5 steps in the modeling process:
+There are 5 steps in the modeling process:
 
 1. Select values for parameters
     + population size -- assessed separately for each population
