@@ -1,12 +1,12 @@
 ---
 title: "ssmc User Guide"
 author: "Bill Peterman"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{ssmc User Guide}
-  \usepackage[utf8]{inputenc}
-  %\VignetteEngine{knitr::rmarkdown}
+date: '`r Sys.Date()`'
+output:
+  html_document: rmarkdown::html_vignette
+  pdf_document: rmarkdown::html_document
+vignette: |
+  %\VignetteIndexEntry{ssmc User Guide} \usepackage[utf8]{inputenc} %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r setup, include=FALSE}
@@ -161,11 +161,7 @@ The results of `site.analysis` contain both a summary data frame as well as the 
 site_summary <- ssmc_summary(ssmc_results = site_results)
 str(site_summary)
 ```
-It is possible to sort the summary data frame using one of the three rank variables generated during the simulation: 
 
-1. 'rank_cont': Populations are ranked based on their average contribution, $\lambda_i$, to metapopulation capacity
-2. 'rank_lamb': Populations are ranked based on the average change in metapopulation capacity, $\Delta \lambda_\mathrm{M}$
-3. 'avg_rank': The average of 'rank_cont' and 'rank_lamb'
 
 Elements of the summary data frame include:
 
@@ -175,7 +171,7 @@ Elements of the summary data frame include:
 4. `pct_immig`: Average percentage of a population that is comprised of immigrants
 5. `pct_sink`: The frequency that a population acted as a sink (i.e. $\frac{i}{p} > 1$) across all simulations
 6. `pct_src`: The frequency that a population acted as a source (i.e. $\frac{i}{p} \leqslant 1$) across all simulations 
-7. `delta_mmt`: The change in metapopulation mean lifetime when population $i$ is removed. This is calculated as: $$\Delta \mathrm{MMLT} = (log_{10}(\mathrm{MMLT.new} + 1) - log_{10}(\mathrm{MMLT.old} + 1)) / log_{10}(\mathrm{MMLT.old} + 1)$$  
+7. `delta_mmlt`: The change in metapopulation mean lifetime when population $i$ is removed. This is calculated as: $$\Delta \mathrm{MMLT} = (log_{10}(\mathrm{MMLT.new} + 1) - log_{10}(\mathrm{MMLT.old} + 1)) / log_{10}(\mathrm{MMLT.old} + 1)$$  
 8. `rank`: The rank order importance of each location as determined by $\Delta \mathrm{MMLT}$
 
 
@@ -185,7 +181,7 @@ Elements of the summary data frame include:
 2. Because `met.size` was specified, there is no need to specify `prop.survive` and `sd.survive`.
 3. `met.size`, if provided, must be in standard units with a mean of zero and standard deviation of one
 4. The units for dispersal distance are arbitrary, but must correspond with the distances that will be calculated between populations based on the xy coordinates. The model was originally applied to populations with xy coordinates in UTM, and dispersal distances in meters.
-5. The `lower.upper_` parameters are used to specify lower and upper threshold values when sampling from a normal distribution. 
+5. The `lower.upper` parameters are used to specify lower and upper threshold values when sampling from a normal distribution. 
 
 
 #### Assessing the potential of a new or restored population to contribute to the metapopulation

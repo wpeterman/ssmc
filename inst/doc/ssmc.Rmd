@@ -1,12 +1,12 @@
 ---
 title: "ssmc User Guide"
 author: "Bill Peterman"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{ssmc User Guide}
-  \usepackage[utf8]{inputenc}
-  %\VignetteEngine{knitr::rmarkdown}
+date: '`r Sys.Date()`'
+output:
+  pdf_document: rmarkdown::html_document
+  html_document: rmarkdown::html_vignette
+vignette: |
+  %\VignetteIndexEntry{ssmc User Guide} \usepackage[utf8]{inputenc} %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r setup, include=FALSE}
@@ -175,7 +175,7 @@ Elements of the summary data frame include:
 4. `pct_immig`: Average percentage of a population that is comprised of immigrants
 5. `pct_sink`: The frequency that a population acted as a sink (i.e. $\frac{i}{p} > 1$) across all simulations
 6. `pct_src`: The frequency that a population acted as a source (i.e. $\frac{i}{p} \leqslant 1$) across all simulations 
-7. `delta_mmt`: The change in metapopulation mean lifetime when population $i$ is removed. This is calculated as: $$\Delta \mathrm{MMLT} = (log_{10}(\mathrm{MMLT.new} + 1) - log_{10}(\mathrm{MMLT.old} + 1)) / log_{10}(\mathrm{MMLT.old} + 1)$$  
+7. `delta_mmlt`: The change in metapopulation mean lifetime when population $i$ is removed. This is calculated as: $$\Delta \mathrm{MMLT} = (log_{10}(\mathrm{MMLT.new} + 1) - log_{10}(\mathrm{MMLT.old} + 1)) / log_{10}(\mathrm{MMLT.old} + 1)$$  
 8. `rank`: The rank order importance of each location as determined by $\Delta \mathrm{MMLT}$
 
 

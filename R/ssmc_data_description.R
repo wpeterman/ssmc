@@ -23,7 +23,7 @@ NULL
 
 #' Example population data
 #'
-#' A data frame containing example to use with the \code{\link[ssmc]{site.analysis}} and \code{\link[ssmc]{best.locale}} functions
+#' A data frame containing example data to use with the \code{\link[ssmc]{site.analysis}} and \code{\link[ssmc]{best.locale}} functions
 #'
 #' \itemize{
 #'    \item site - Numeric site ID
@@ -31,7 +31,7 @@ NULL
 #'    \item y -  y-coordinate
 #'    \item A - area of each site
 #'    \item ab.mean Mean population abundance of each site
-#'    \item ad.sd Standard deviation of mean population abundance at each site
+#'    \item ab.sd Standard deviation of mean population abundance at each site
 #'    \item svl.mean Mean size (snout-vent length = SVL) for each population. Provided in standard units such that the mean of all observation equals 0 with a standard deviation of 1 (i.e. scaled and centered)
 #'    \item svl.sd Standard deviation of standardized mean size variable
 #'    }

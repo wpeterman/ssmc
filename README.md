@@ -16,7 +16,7 @@ library(devtools) # Loads devtools
 install_github("wpeterman/ssmc") # Download package
 library(ssmc) # Installs package and the other required packages needed
 ```
-Once the package is installed, you can further explore the functions by opening the HTML 'Vignette' using the code below, or you can view the vignette directly [**here**](https://dl.dropboxusercontent.com/u/23513016/ssmc.html "Vignette")
+Once the package is installed, you can further explore the functions by opening the HTML 'Vignette' using the code below, or you can view the vignette directly [**here**](https://dl.dropboxusercontent.com/u/23513016/ssmc.pdf?raw=1 "Vignette")
 ```
 vignette('ssmc')  # Opens tutorial in web browser
 ```

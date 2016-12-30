@@ -1,24 +1,24 @@
 #'  A function to assess average source-sink status of populations as well as rank importance of populations in contributing to the metapopulation mean lifetime
 #'
-#'  @param sites A four-column matrix or data frame providing the name of the site (column 1) and the xy coordinates of current sites (columns 2 & 3), and area of the habitat patch (column 4)
-#'  @param pop.abun A two-column data frame with mean population size in column 1 and standard deviation in column 2
-#'  @param met.size (Default = NULL) If specified, must be a two-column data frame with the mean (column 1) and standard deviation (column 2) of the size of metamoprhs or late-stage larvae. See Details for more information concerning this parameter.
-#'  @param prop.philo (Default = 0.85) Mean proportion of population that are philopatric to their natal population
-#'  @param sd.philo (Default = 0.05) Standard deviation of proportion of population that are philopatric to their natal population
-#'  @param lower.upper_philo (Default = c(lower=0, upper=1)) Threshold lower and upper values for the proportion of philopatric individuals. Must be provided as a two-element vector with lower value first. See Details for use
-#'  @param prop.survive (Default = 0.2) Mean survival of to adulthood. Ignored if \code{met.size} is specified. See Details for more information.
-#'  @param sd.survive (Default = 0.075) Standard deviation of survival of to adulthood.
-#'  @param lower.upper_survive (Default = c(lower=0, upper=1))Threshold lower and upper values for the proportion of individuals surviving to adulthood. Must be provided as a two-element vector with lower value first. See Details
-#'  @param dispersal Mean dispersal distance. Should be specified in units meaningful to the coordinate system describing the spatial location of populations. See Details for how dispersal is estimated.
-#'  @param sd.dispersal Standard deviation of dispersal distance.
-#'  @param lower.upper_dispersal (Default = c(lower=1, upper=Inf))Threshold lower and upper values for average dispersal distance. Must be provided as a two-element vector with minimum value first. See Details
-#'  @param eps Coefficient ([0,1]) relating to minimum patch size (Default = 1). See Details
-#'  @param mu Number of immigrants needed for successful colonization (Default = 2). See Details
-#'  @param eta Scaling parameter (Default = 0.5). See Details
-#'  @param iterations Number of Monte Carlo iterations to run
-#'  @param seed Optional to set the seed for repeatability  among model runs (Default = NULL)
+#' @param sites A four-column matrix or data frame providing the name of the site (column 1) and the xy coordinates of current sites (columns 2 & 3), and area of the habitat patch (column 4)
+#' @param pop.abun A two-column data frame with mean population size in column 1 and standard deviation in column 2
+#' @param met.size (Default = NULL) If specified, must be a two-column data frame with the mean (column 1) and standard deviation (column 2) of the size of metamoprhs or late-stage larvae. See Details for more information concerning this parameter.
+#' @param prop.philo (Default = 0.85) Mean proportion of population that are philopatric to their natal population
+#' @param sd.philo (Default = 0.05) Standard deviation of proportion of population that are philopatric to their natal population
+#' @param lower.upper_philo (Default = c(lower=0, upper=1)) Threshold lower and upper values for the proportion of philopatric individuals. Must be provided as a two-element vector with lower value first. See Details for use
+#' @param prop.survive (Default = 0.2) Mean survival of to adulthood. Ignored if \code{met.size} is specified. See Details for more information.
+#' @param sd.survive (Default = 0.075) Standard deviation of survival of to adulthood.
+#' @param lower.upper_survive (Default = c(lower=0, upper=1))Threshold lower and upper values for the proportion of individuals surviving to adulthood. Must be provided as a two-element vector with lower value first. See Details
+#' @param dispersal Mean dispersal distance. Should be specified in units meaningful to the coordinate system describing the spatial location of populations. See Details for how dispersal is estimated.
+#' @param sd.dispersal Standard deviation of dispersal distance.
+#' @param lower.upper_dispersal (Default = c(lower=1, upper=Inf))Threshold lower and upper values for average dispersal distance. Must be provided as a two-element vector with minimum value first. See Details
+#' @param eps Coefficient ([0,1]) relating to minimum patch size (Default = 1). See Details
+#' @param mu Number of immigrants needed for successful colonization (Default = 2). See Details
+#' @param eta Scaling parameter (Default = 0.5). See Details
+#' @param iterations Number of Monte Carlo iterations to run
+#' @param seed Optional to set the seed for repeatability  among model runs (Default = NULL)
 #'
-#'  @usage site.analysis(sites,
+#' @usage site.analysis(sites,
 #' pop.abun,
 #' met.size=NULL,
 #' prop.philo=.85,
@@ -55,17 +55,25 @@
 #'
 #' @details
 #' If \code{met.size} is specified, the probability of surviving to adulthood is determined using the equation:\cr
+#'
 #' logit(p.survive) =  -1.366 + 0.87 * size\cr
+#'
 #' This equation comes from Altwegg & Reyer (2003). Mean and standard deviation values for \code{met.size} must be reported in standard units such that the mean and standard deviation of observations equal zero and one, respectively (i.e. scale and center observations). In the absence of metamorph, survival probability and variation can be specified using \code{prop.survive}.
 #'
-#' This model assumes uncertainty or variability in (1) population size; \cr \cr (2) size of metamorphs OR proportion surviving; \cr \cr (3) proportion of population that is philopatric; \cr \cr (4) mean dispersal distance. Uncertainty in these parameters is incorporated through repeated draws from normal distibutions with a mean and standard deviation as specified. Because some values are unrealistic (e.g., survival > 1), a truncated normal distribution is used, which requires the specification of lower and upper values. If there are no limits on the lower or upper values, then \code{-Inf} or \code{Inf} should be specified. Lower and upper values must be provided as a two-element vector (e.g., c(0,1)) for \code{lower.upper_philo}, \code{lower.upper_survive}, and \code{lower.upper_dispersal}
+#' This model assumes uncertainty or variability in:\cr
+#'  (1) population size; \cr
+#'  (2) size of metamorphs OR proportion surviving; \cr
+#'  (3) proportion of population that is philopatric; \cr
+#'  (4) mean dispersal distance.
+#'
+#'  Uncertainty in these parameters is incorporated through repeated draws from normal distibutions with a mean and standard deviation as specified. Because some values are unrealistic (e.g., survival > 1), a truncated normal distribution is used, which requires the specification of lower and upper values. If there are no limits on the lower or upper values, then \code{-Inf} or \code{Inf} should be specified. Lower and upper values must be provided as a two-element vector (e.g., c(0,1)) for \code{lower.upper_philo}, \code{lower.upper_survive}, and \code{lower.upper_dispersal}
 #'
 #' Probability of dispersal between two populations is determined using an incidence function wherein the probability of connectivity is a negative exponential relationship with 1/mean dispersal controlling the rate of decay.
 #'
 #' @seealso
 #' \code{\link[ssmc]{ssmc_summary}}
 #'
-#'    @references Altwegg, R., and H.-U. Reyer. 2003. Patterns of natural selection on size at metamorphosis in water frogs. Evolution 57:872-882.
+#' @references Altwegg, R., and H.-U. Reyer. 2003. Patterns of natural selection on size at metamorphosis in water frogs. Evolution 57:872-882.
 #'
 #' @examples
 #'    # Assess existing populations
@@ -319,48 +327,65 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3, ar
   ss.results <- list(summary.df=out,
                      results.list=results.list)
   return(ss.results)
+  gc()  ## Flush memory
 
 } # End function
 
-MMLT <- function(N, S_i, S_o, eps, A, mu, eta) {
+MMLT <- function(N, S_i, S_o, eps, A, mu, eta, method = "approx") {
   # Equations from Kininmonth et al. 2010
   # Extinction rate
   Vi <- eps*(A^-eta) # eq 1
-  C_out <- S_o/mu # eq 4
-  C_in <- S_i/mu # eq 5
+  C_out <- S_o/mu # eq 3
+  C_in <- S_i/mu # eq 4
   u_out <- C_out/Vi # eq 6
   u_in <- C_in/Vi # eq 7
 
   # Harmonic mean
   Ui <- (.5*(u_in)^-2 + .5*(u_out)^-2)^-.5 # (Drechsler 2009 eq 8)
-  Ui[Ui<sqrt(2)] <- sqrt(2) # Take Ui or sqrt(2), whichever is larger
+  Ui[Ui<sqrt(2)] <- sqrt(2) # Take Ui or sqrt(2), whichever is larger, eq 9, part 1
 
-  q <- prod(Ui^(1/N)) # eq 8 ()
-  v <- prod(Vi^(1/N)) # eq 9 (Geometric local extinction rates)
+  q <- prod(Ui^(1/N)) # eq 9 --> Colinization-extinction ratio
+  v <- prod(Vi^(1/N)) # eq 10 (Geometric local extinction rates)
 
-  # Apply mmlt_fun (eq 10)
-  # if(q>2.5 & N>150){
-    # MMLT <- N*((1/q) + log(q) - 1)
+
+  ## Default is to use approximation
+  if(method == "approx") {
     MMLT <- N*((1/q) + log(q) - 1) # Eq 12
-    MMLT <- log((exp(MMLT)/v) + 1,10)
+    MMLT <- exp(MMLT) / v
+    MMLT <- log10(MMLT + 1)
     MMLT <- ifelse(is.infinite(MMLT),NA, MMLT)
+  } else {
+    if(q>2.5 & N>150){
+      MMLT <- N*((1/q) + log(q) - 1) # Eq 12
+      MMLT <- exp(MMLT) / v
+      MMLT <- log10(MMLT + 1)
+      MMLT <- ifelse(is.infinite(MMLT),NA, MMLT)
 
-    # Requiring factorial limits size of network that can be analyzed
-    # MMLT <- (1/v)*exp((N/q)) * ((factorial(N-1))/(N*(N-1)^(N-1)))*(q)^(N-1) # Eq 6 F&W
+      return(MMLT)
 
-    # log_MMLT <- log(MMLT)
-    # return(log_MMLT)
-    return(MMLT)
-  # } else {
-  #   MMLT <- (1/v)*sum(outer(1:N, 1:N, mmlt_fun,q,N))
-  #   log_MMLT <- log(MMLT)
-  #   return(log_MMLT)
-  # }
-}
+    } else {   # Requiring factorial limits size of network that can be analyzed (eq. 11)
+      ## Eq 11
+      MMLT <- (1/v)*sum(outer(1:N, 1:N, mmlt_fun, q, N))
+      MMLT <- log10(MMLT + 1)
+      return(MMLT)
+    } ## End inner ifelse
+  } ## End outer ifelse
+} ## End function
+
 #!#!#!#!#!#!#!
 # Compliments of Grant Connette...nearly 100x faster
-mmlt_fun <- function(i,k,q,N){(1/k * (factorial(N-i)/factorial(N-k)) * (1/(N-1)^(k-i)) * q^(k-i))}
+# Grant <- function(){
+#   MMT_fun <- function(i,k){(1/k * (factorial(N-i)/factorial(N-k)) * (1/(N-1)^(k-i)) * q^(k-i))}
+#   MMT <- (1/v)*sum(outer(1:N, 1:N, MMT_fun))
+#   log(MMT)
+# }
+#
+# q <- 4.69
+# v <- 8.4e-15
+# N <- 140
 
+mmlt_fun <- function(i,k,q,N){(1/k * (factorial(N-i)/factorial(N-k)) * (1/(N-1)^(k-i)) * q^(k-i))}
+  # MMLT2 <- (1/v)*sum(outer(1:N, 1:N, mmlt_fun, q, N))
 
 # Dan <- function() {
 # mmlt_fun <- function(x) {
@@ -374,8 +399,8 @@ mmlt_fun <- function(i,k,q,N){(1/k * (factorial(N-i)/factorial(N-k)) * (1/(N-1)^
 # }
 
 # Dan's function
-mmlt_fun2 <- function(x) {
-  mmlt <- (1/x["k"] * (gamma(as(x["N"]-x["i"],'mpfr'))/gamma(as(x["N"]-x["k"],'mpfr'))) * (1/(x["N"]-1)^(x["k"]-x["i"])) * x["q"]^(x["k"]-x["i"]))
-  return(mmlt)
-}
+# mmlt_fun2 <- function(x) {
+#   mmlt <- (1/x["k"] * (gamma(as(x["N"]-x["i"],'mpfr'))/gamma(as(x["N"]-x["k"],'mpfr'))) * (1/(x["N"]-1)^(x["k"]-x["i"])) * x["q"]^(x["k"]-x["i"]))
+#   return(mmlt)
+# }
 

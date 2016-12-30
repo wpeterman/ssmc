@@ -1,9 +1,9 @@
 #'  A function to assess and rank possible locations for their contribution to the metapopulation
 #' @inheritParams site.analysis
-#'  @param potential.sites A three column matrix providing the name of the site (column 1) and the xy coordinates of current sites (columns 2 & 3)
-#'  @param restore Logical. If TRUE, then \code{potential.sites} does not need to be specified. Instead, exisitng sites provided in \code{sites} that are currently unoccupied (abundance = 0) will be iteratively assessed at the mean of all occupied sites.
+#' @param potential.sites A three column matrix providing the name of the site (column 1) and the xy coordinates of current sites (columns 2 & 3)
+#' @param restore Logical. If TRUE, then \code{potential.sites} does not need to be specified. Instead, exisitng sites provided in \code{sites} that are currently unoccupied (abundance = 0) will be iteratively assessed at the mean of all occupied sites.
 
-#'  @usage best.locale(sites,
+#' @usage best.locale(sites,
 #' restore = NULL,
 #' potential.sites = NULL,
 #' pop.abun,
@@ -30,7 +30,7 @@
 #' Elements of the summary data frame include: \cr
 #' (1) \code{mmlt}: The log10 of the Metapopulation Mean Lifetime;\cr
 #' (2) \code{rank}: The rank order importance based on mmlt;\cr
-#' (3) \code{frq_col}: TThe frequency that 2 or more individuals immigrated into a population. This metric is used to adjust mmlt for likelihood of colonization;\cr
+#' (3) \code{frq_col}: The frequency that 2 or more individuals immigrated into a population. This metric is used to adjust mmlt for likelihood of colonization;\cr
 #' (4) \code{mmlt_col}: The product of mmlt and frq_col;\cr
 #' (5) \code{rank_adj}: The rank importance of each potential location based on the product of mmlt and the frequency of colonization (frq_col)
 #'
@@ -38,10 +38,18 @@
 #'
 #' @details
 #' If \code{met.size} is specified, the probability of surviving to adulthood is determined using the equation:\cr
-#' logit(p.survive) =  -1.366 + 0.87 * size\cr
-#' This equation comes from Altwegg & Reyer (2003). Mean and standard deviation values for \code{met.size} must be reported in standard units such that the mean and standard deviation of observations equal zero and one, respectively (i.e. scale and center observations). In the absence of metamorph, survival probability and variation can be specified using \code{prop.survive}.
 #'
-#' This model assumes uncertainty or variability in (1) population size; (2) size of metamorphs OR proportion surviving; (3) proportion of population that is philopatric; (4) mean dispersal distance. Uncertainty in these parameters is incorporated through repeated draws from normal distibutions with a mean and standard deviation as specified. Because some values are unrealistic (e.g., survival > 1), a truncated normal distribution is used, which requires the specification of lower and upper values. If there are no limits on the lower or upper values, then \code{-Inf} or \code{Inf} should be specified. Lower and upper values must be provided as a two-element vector (e.g., c(0,1)) for \code{lower.upper_philo}, \code{lower.upper_survive}, and \code{lower.upper_dispersal}
+#' logit(p.survive) =  -1.366 + 0.87 * size\cr
+#'
+#' This equation comes from Altwegg & Reyer (2003). Mean and standard deviation values for \code{met.size} must be reported in standard units such that the mean and standard deviation of observations equal zero and one, respectively (i.e. scale and center observations). In the absence of metamorph data, survival probability and variation can be specified using \code{prop.survive}.
+#'
+#' This model assumes uncertainty or variability in: \cr
+#' (1) population size; \cr
+#' (2) size of metamorphs OR proportion surviving; \cr
+#' (3) proportion of population that is philopatric; \cr
+#' (4) mean dispersal distance. \cr
+#'
+#' Uncertainty in these parameters is incorporated through repeated draws from normal distibutions with a mean and standard deviation as specified. Because some values are unrealistic (e.g., survival > 1), a truncated normal distribution is used, which requires the specification of lower and upper values. If there are no limits on the lower or upper values, then \code{-Inf} or \code{Inf} should be specified. Lower and upper values must be provided as a two-element vector (e.g., c(0,1)) for \code{lower.upper_philo}, \code{lower.upper_survive}, and \code{lower.upper_dispersal}
 #'
 #' Probability of dispersal between two populations is determined using an incidence function wherein the probability of connectivity is a negative exponential relationship with 1/mean dispersal controlling the rate of decay.
 #'
@@ -90,7 +98,7 @@
 #'    iterations = 10,
 #'    seed = 123)
 #'
-#'    @references Altwegg, R., and H.-U. Reyer. 2003. Patterns of natural selection on size at metamorphosis in water frogs. Evolution 57:872-882.
+#' @references Altwegg, R., and H.-U. Reyer. 2003. Patterns of natural selection on size at metamorphosis in water frogs. Evolution 57:872-882.
 
 best.locale <- function(sites,
                         restore = NULL,
@@ -267,7 +275,7 @@ best.locale <- function(sites,
   } # End iterations loop
 
   mmlt.list <- llply(results.df, function(x) x[,5])
-  mmlt <- log(ldply(mmlt.list, rbind) %>% apply(., 2, mean, na.rm = T), 10)
+  mmlt <- ldply(mmlt.list, rbind) %>% apply(., 2, mean, na.rm = T)
   rank_mmlt <- rank(-mmlt)
 
   col.list <- llply(results.df, function(x) x[,6])
@@ -309,6 +317,13 @@ best.locale <- function(sites,
               results.list = results.df)
   return(out)
 
+  gc() ## Flush memory
+
+  #######################################
+  #!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!
+  #### RESTORE Option ####
+  #######################################
+  
   ## If RESTORE is specified
   } else {
     area <- c(sites[,4])
@@ -446,7 +461,7 @@ best.locale <- function(sites,
     } # End iterations loop
 
     mmlt.list <- llply(results.df, function(x) x[,5])
-    mmlt <- log(ldply(mmlt.list, rbind) %>% apply(., 2, mean, na.rm = T), 10)
+    mmlt <- ldply(mmlt.list, rbind) %>% apply(., 2, mean, na.rm = T)
     rank_mmlt <- rank(-mmlt)
 
     col.list <- llply(results.df, function(x) x[,6])
@@ -469,5 +484,6 @@ best.locale <- function(sites,
     out <- list(summary.df = summary.df,
                 results.list = results.df)
     return(out)
+    gc()  ## Flush memory
   }
 } # End function

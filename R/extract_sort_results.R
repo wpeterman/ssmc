@@ -1,9 +1,9 @@
 #'  A function to extract the summary data from \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}} functions
 #'
-#'  @param ssmc_results Output object from \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}}
-#'  @param ... Optional to select which column to sort by when summarizing the results data frame. The default is to sort by \code{rank}
+#' @param ssmc_results Output object from \code{\link[ssmc]{site.analysis}} or \code{\link[ssmc]{best.locale}}
+#' @param ... Optional to select which column to sort by when summarizing the results data frame. The default is to sort by \code{rank}
 #'
-#'  @usage ssmc_summary(ssmc_results, ...)
+#' @usage ssmc_summary(ssmc_results, ...)
 #'
 #' @author Bill Peterman <Peterman.73@@osu.edu>
 #'
