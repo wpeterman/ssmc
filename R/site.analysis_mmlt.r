@@ -293,7 +293,7 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3, ar
   sink <- llply(results.list,function(x) x[,8])
   delta_mmlt <- llply(results.list,function(x) x[,9])
   connect <- unlist(connect.list)
-  connect.max <- llply(connect.list, max) %>% unlist()
+  connect.max <- llply(connect.list, RobustMax) %>% unlist()
   is.na(connect.max) <- sapply(connect.max, is.infinite)
 
   immig <- ldply(immig,rbind) %>%
@@ -401,6 +401,8 @@ MMLT <- function(N, S_i, S_o, eps, A, mu, eta, method = "approx") {
 # N <- 140
 
 mmlt_fun <- function(i,k,q,N){(1/k * (factorial(N-i)/factorial(N-k)) * (1/(N-1)^(k-i)) * q^(k-i))}
+
+RobustMax <- function(x) {if (length(x)>0) max(x) else -Inf}
   # MMLT2 <- (1/v)*sum(outer(1:N, 1:N, mmlt_fun, q, N))
 
 # Dan <- function() {

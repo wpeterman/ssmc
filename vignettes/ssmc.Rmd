@@ -3,7 +3,7 @@ title: "ssmc User Guide"
 author: "Bill Peterman"
 date: '`r Sys.Date()`'
 output:
-  pdf_document: rmarkdown::html_document
+  pdf_document: rmarkdown::pdf_document
   html_document: rmarkdown::html_vignette
 vignette: |
   %\VignetteIndexEntry{ssmc User Guide} 
