@@ -161,11 +161,7 @@ The results of `site.analysis` contain both a summary data frame as well as the 
 site_summary <- ssmc_summary(ssmc_results = site_results)
 str(site_summary)
 ```
-It is possible to sort the summary data frame using one of the three rank variables generated during the simulation: 
-
-1. 'rank_cont': Populations are ranked based on their average contribution, $\lambda_i$, to metapopulation capacity
-2. 'rank_lamb': Populations are ranked based on the average change in metapopulation capacity, $\Delta \lambda_\mathrm{M}$
-3. 'avg_rank': The average of 'rank_cont' and 'rank_lamb'
+It is possible to sort the summary data frame by using any of the columns of the output data frame.
 
 Elements of the summary data frame include:
 
@@ -176,8 +172,13 @@ Elements of the summary data frame include:
 5. `pct_sink`: The frequency that a population acted as a sink (i.e. $\frac{i}{p} > 1$) across all simulations
 6. `pct_src`: The frequency that a population acted as a source (i.e. $\frac{i}{p} \leqslant 1$) across all simulations 
 7. `delta_mmlt`: The change in metapopulation mean lifetime when population $i$ is removed. This is calculated as: $$\Delta \mathrm{MMLT} = (log_{10}(\mathrm{MMLT.new} + 1) - log_{10}(\mathrm{MMLT.old} + 1)) / log_{10}(\mathrm{MMLT.old} + 1)$$  
-8. `rank`: The rank order importance of each location as determined by $\Delta \mathrm{MMLT}$
+8. `rank`: The rank order importance of each location as determined by $\Delta \mathrm{MMLT}$     
 
+
+Finally, the distance between connected sites is monitored throughout the analysis and is summarized in the results output `$connect.df`. The mean and standard deviation of the distance between connected sites can be reviewed by
+```{r}
+site_results$connect.df
+```
 
 **Comments on using `site.analysis`**
 

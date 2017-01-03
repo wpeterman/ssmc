@@ -136,7 +136,7 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3, ar
 
   n <- nrow(sites)
   results.list <- vector("list",iterations)
-  #   results.df <- vector("list",iterations)
+  connect.list <- vector("list",iterations)
   site.coords <- sites[,2:3]
   colnames(site.coords) <- c("x","y")
 
@@ -205,6 +205,8 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3, ar
                           emig = philo.emig[,4],
                           in_deg = colSums(e.mat_bin),
                           out_deg = rowSums(e.mat_bin))
+
+    connect.dist <- dist.mat[e.mat > 1]
 
     results <- results %>%
       mutate(pct_immig = ifelse(philo>0 & immig!=0, immig/(immig+philo),
@@ -277,6 +279,7 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3, ar
     results <- cbind(data.frame(iter=i),results)
 
     results.list[[i]] <- results
+    connect.list[[i]] <- connect.dist
 
     progress_bar$step()
   } # End iterations loop
@@ -289,6 +292,7 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3, ar
   pct_immig <- llply(results.list,function(x) x[,7])
   sink <- llply(results.list,function(x) x[,8])
   delta_mmlt <- llply(results.list,function(x) x[,9])
+  connect <- unlist(connect.list)
 
   immig <- ldply(immig,rbind) %>%
     apply(.,2,mean,na.rm=T)
@@ -306,6 +310,8 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3, ar
     apply(.,2,mean,na.rm=T)
   delt_mmlt <- ldply(delta_mmlt,rbind) %>%
     apply(.,2,mean,na.rm=T)
+  avg_connect <- mean(connect)
+  sd_connect <- sd(connect)
 
   rank_mmlt <- rank(delt_mmlt, ties.method = 'min')
 
@@ -324,8 +330,12 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3, ar
                     rank=rank_mmlt
   )
 
-  ss.results <- list(summary.df=out,
-                     results.list=results.list)
+  connect.summary <- data.frame(avg_connect.dist = avg_connect,
+                                 sd_connect.dist = sd_connect)
+
+  ss.results <- list(summary.df = out,
+                     connect.df = connect.summary,
+                     results.list = results.list)
   return(ss.results)
   gc()  ## Flush memory
 

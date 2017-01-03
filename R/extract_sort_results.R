@@ -37,7 +37,7 @@
 
 
 ssmc_summary <- function(ssmc_results, ...) {
-  dots <- list(...)                   #1
+  dots <- list(...)
   if(length(dots) == 0) {
     sort.by <- 'rank'
   } else {
