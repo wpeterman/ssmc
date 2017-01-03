@@ -264,8 +264,8 @@ str(site_summary)</code></pre>
 </ol>
 <p>Finally, the distance between connected sites is monitored throughout the analysis and is summarized in the results output <code>$connect.df</code>. The mean and standard deviation of the distance between connected sites can be reviewed by</p>
 <pre class="r"><code>site_results$connect.df</code></pre>
-<pre><code>##   avg_connect.dist sd_connect.dist
-## 1         13.82469         10.4314</code></pre>
+<pre><code>##   avg_dist sd_dist  avg_max   sd_max
+## 1 13.82469 10.4314 30.15437 6.363448</code></pre>
 <p><strong>Comments on using <code>site.analysis</code></strong></p>
 <ol style="list-style-type: decimal">
 <li>This is a rather computationally intensive process, so the number of Monte Carlo iterations has been kept to a minimum for example purposes. It is highly recommended that 1,000–10,000 iterations be used when conducting real analyses.</li>

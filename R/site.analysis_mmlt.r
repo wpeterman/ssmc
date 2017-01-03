@@ -293,6 +293,8 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3, ar
   sink <- llply(results.list,function(x) x[,8])
   delta_mmlt <- llply(results.list,function(x) x[,9])
   connect <- unlist(connect.list)
+  connect.max <- llply(connect.list, max) %>% unlist()
+  is.na(connect.max) <- sapply(connect.max, is.infinite)
 
   immig <- ldply(immig,rbind) %>%
     apply(.,2,mean,na.rm=T)
@@ -310,8 +312,10 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3, ar
     apply(.,2,mean,na.rm=T)
   delt_mmlt <- ldply(delta_mmlt,rbind) %>%
     apply(.,2,mean,na.rm=T)
-  avg_connect <- mean(connect)
-  sd_connect <- sd(connect)
+  avg_connect <- mean(connect, na.rm = T)
+  sd_connect <- sd(connect, na.rm = T)
+  avg_max <- mean(connect.max, na.rm = T)
+  sd_max <- sd(connect.max, na.rm = T)
 
   rank_mmlt <- rank(delt_mmlt, ties.method = 'min')
 
@@ -330,8 +334,10 @@ site.analysis <- function(sites, # Pond names in column 1, coords in col 2&3, ar
                     rank=rank_mmlt
   )
 
-  connect.summary <- data.frame(avg_connect.dist = avg_connect,
-                                 sd_connect.dist = sd_connect)
+  connect.summary <- data.frame(avg_dist = avg_connect,
+                                sd_dist = sd_connect,
+                                avg_max = avg_max,
+                                sd_max = sd_max)
 
   ss.results <- list(summary.df = out,
                      connect.df = connect.summary,
