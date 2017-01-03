@@ -41,6 +41,9 @@ str(site.dat)
 site_summary <- ssmc_summary(ssmc_results = site_results)
 str(site_summary)
 
+## ------------------------------------------------------------------------
+site_results$connect.df
+
 ## ----results='hide',message=FALSE, warning=FALSE-------------------------
 best_results <- best.locale(sites = site.dat[,1:4],
                             potential.sites = potential.dat,

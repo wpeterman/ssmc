@@ -6,7 +6,9 @@ output:
   pdf_document: rmarkdown::html_document
   html_document: rmarkdown::html_vignette
 vignette: |
-  %\VignetteIndexEntry{ssmc User Guide} \usepackage[utf8]{inputenc} %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{ssmc User Guide} 
+  %\VignetteEngine{knitr::rmarkdown} 
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
