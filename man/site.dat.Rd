@@ -4,7 +4,9 @@
 \name{site.dat}
 \alias{site.dat}
 \title{Example population data}
-\format{A 25 x 8 data frame}
+\format{
+A 25 x 8 data frame
+}
 \usage{
 data(site.dat)
 }

@@ -1,10 +1,10 @@
 #'  A function to assess and rank possible locations for their contribution to the metapopulation
 #' @inheritParams site.analysis
 #' @param potential.sites A three column matrix providing the name of the site (column 1) and the xy coordinates of current sites (columns 2 & 3)
-#' @param restore Logical. If TRUE, then \code{potential.sites} does not need to be specified. Instead, exisitng sites provided in \code{sites} that are currently unoccupied (abundance = 0) will be iteratively assessed at the mean of all occupied sites.
+#' @param restore Logical. If TRUE, then \code{potential.sites} does not need to be specified. Instead, existing sites provided in \code{sites} that are currently unoccupied (abundance = 0) will be iteratively assessed at the mean of all occupied sites.
 
 #' @usage best.locale(sites,
-#' restore = NULL,
+#' restore = FALSE,
 #' potential.sites = NULL,
 #' pop.abun,
 #' met.size=NULL,
@@ -101,9 +101,8 @@
 #' @references Altwegg, R., and H.-U. Reyer. 2003. Patterns of natural selection on size at metamorphosis in water frogs. Evolution 57:872-882.
 
 best.locale <- function(sites,
-                        restore = NULL,
+                        restore = FALSE,
                         potential.sites = NULL,
-                        percent.improve = NULL,
                         n.sites = 10,
                         pop.abun,
                         met.size=NULL,
@@ -122,7 +121,7 @@ best.locale <- function(sites,
                         iterations,
                         seed=NULL){
 
-  if(is.null(potential.sites) & is.null(restore))
+  if(is.null(potential.sites) & isFALSE(restore))
     stop("Must specify either 'potential.sites' OR set 'restore = TRUE' when using this function")
 
   if(!is.null(seed)){
@@ -132,7 +131,7 @@ best.locale <- function(sites,
   #!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!#!
   #### New Site Option ####
 
-  if(is.null(restore)) {
+  if(isFALSE(restore)) {
     n <- nrow(potential.sites)
     results <- vector("list",n)
     results.df <- vector("list",iterations)
@@ -160,8 +159,8 @@ best.locale <- function(sites,
 
       # Make potential ponds of average population size and metamorph size
       pop.size <- pop.abun %>% rowwise() %>%
-        mutate(pop.size = rnorm(1,mean.ab,sd))  %>%
-        mutate(pop.size=ifelse(pop.size < 0,0,pop.size)) %>%
+        dplyr::mutate(pop.size = rnorm(1,mean.ab,sd))  %>%
+        dplyr::mutate(pop.size=ifelse(pop.size < 0,0,pop.size)) %>%
         select(pop.size) %>%
         data.frame(.)
 
@@ -173,7 +172,7 @@ best.locale <- function(sites,
       if(!is.null(met.size)){
         size.dat <- met.size %>%
           rowwise() %>%
-          mutate(met.size = rnorm(1,svl.mean,svl.sd))  %>%
+          dplyr::mutate(met.size = rnorm(1,svl.mean,svl.sd))  %>%
           select(met.size) %>%
           data.frame(.)
 
@@ -196,7 +195,7 @@ best.locale <- function(sites,
         surv.vec <- p.survive$p.survive
 
         philo.emig <- pop.size %>%
-          mutate(survive = rbinom(n(),pop.vec,surv.vec),
+          dplyr::mutate(survive = rbinom(n(),pop.vec,surv.vec),
                  philo=rbinom(n(),survive,p.philo),
                  emigrant = survive-philo,
                  dead = pop.size - survive)
@@ -204,7 +203,7 @@ best.locale <- function(sites,
         pop.vec <- pop.size$pop.size
 
         philo.emig <- pop.size %>%
-          mutate(survive = rbinom(n(),pop.vec,p.survive),
+          dplyr::mutate(survive = rbinom(n(),pop.vec,p.survive),
                  philo=rbinom(n(),survive,p.philo),
                  emigrant = survive-philo,
                  dead = pop.size - survive)
@@ -388,8 +387,8 @@ best.locale <- function(sites,
 
       ## Determine population size from distribution
       pop.size <- pop.abun %>% rowwise() %>%
-        mutate(pop.size = rnorm(1,mean.ab,sd))  %>%
-        mutate(pop.size=ifelse(pop.size < 0,0,pop.size)) %>%
+        dplyr::mutate(pop.size = rnorm(1,mean.ab,sd))  %>%
+        dplyr::mutate(pop.size=ifelse(pop.size < 0,0,pop.size)) %>%
         select(pop.size) %>%
         data.frame(.)
 
@@ -405,7 +404,7 @@ best.locale <- function(sites,
       if(!is.null(met.size)){
         size.dat <- met.size %>%
           rowwise() %>%
-          mutate(met.size = rnorm(1,svl.mean,svl.sd))  %>%
+          dplyr::mutate(met.size = rnorm(1,svl.mean,svl.sd))  %>%
           select(met.size) %>%
           data.frame(.)
 
@@ -447,16 +446,16 @@ best.locale <- function(sites,
           pop.vec <- pop.size$pop.size
           surv.vec <- p.survive$p.survive
 
-          philo.emig <- round(pop.vec) %>%
-            mutate(survive = rbinom(n(),round(pop.vec),surv.vec),
+          philo.emig <- round(pop.vec) %>% data.frame() %>%
+            dplyr::mutate(survive = rbinom(n(),round(pop.vec),surv.vec),
                    philo=rbinom(n(),survive,p.philo),
                    emigrant = survive-philo,
                    dead = pop.size - survive)
         } else {
           pop.vec <- pop.size$pop.size
 
-                    philo.emig <- round(pop.vec) %>%
-            mutate(survive = rbinom(n(),round(pop.vec),p.survive),
+                    philo.emig <- round(pop.vec) %>%  data.frame() %>%
+            dplyr::mutate(survive = rbinom(n(),round(pop.vec),p.survive),
                    philo=rbinom(n(),survive,p.philo),
                    emigrant = survive-philo,
                    dead = pop.size - survive)

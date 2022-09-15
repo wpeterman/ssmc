@@ -5,7 +5,7 @@
 \title{A function to assess and rank possible locations for their contribution to the metapopulation}
 \usage{
 best.locale(sites,
-restore = NULL,
+restore = FALSE,
 potential.sites = NULL,
 pop.abun,
 met.size=NULL,
@@ -27,7 +27,7 @@ seed=NULL)
 \arguments{
 \item{sites}{A four-column matrix or data frame providing the name of the site (column 1) and the xy coordinates of current sites (columns 2 & 3), and area of the habitat patch (column 4)}
 
-\item{restore}{Logical. If TRUE, then \code{potential.sites} does not need to be specified. Instead, exisitng sites provided in \code{sites} that are currently unoccupied (abundance = 0) will be iteratively assessed at the mean of all occupied sites.}
+\item{restore}{Logical. If TRUE, then \code{potential.sites} does not need to be specified. Instead, existing sites provided in \code{sites} that are currently unoccupied (abundance = 0) will be iteratively assessed at the mean of all occupied sites.}
 
 \item{potential.sites}{A three column matrix providing the name of the site (column 1) and the xy coordinates of current sites (columns 2 & 3)}
 
