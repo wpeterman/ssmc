@@ -1,7 +1,7 @@
 Package: ssmc
 Type: Package
 Title: Assess source-sink population status using Monte Carlo simulation
-Version: 0.1.3
+Version: 0.1.4
 Author: Bill Peterman
 Maintainer: Bill Peterman <Peterman.73@osu.edu>
 Description: This package provides functions to conduct Monte Carlo simulations
@@ -10,7 +10,7 @@ Description: This package provides functions to conduct Monte Carlo simulations
     contributions of populations following habitat creation or restoration.
 VignetteBuilder: knitr
 Depends:
-    R (>= 3.0),
+    R (>= 4.0),
     dplyr
 Imports:
     plyr,
@@ -19,4 +19,4 @@ Suggests:
     knitr
 License: GPL (>= 2)
 LazyData: TRUE
-RoxygenNote: 6.0.1
+RoxygenNote: 7.2.1

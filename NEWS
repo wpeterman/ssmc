@@ -1,3 +1,6 @@
+ssmc 0.1.4
+--------
+* Fixed bug in `best.locale` function
 
 ssmc 0.1.3
 --------

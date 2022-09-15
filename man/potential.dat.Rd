@@ -4,7 +4,9 @@
 \name{potential.dat}
 \alias{potential.dat}
 \title{Example potential site data}
-\format{A 25 x 3 data frame}
+\format{
+A 25 x 3 data frame
+}
 \usage{
 data(potential.dat)
 }
@@ -13,6 +15,7 @@ Sample file to be used with \code{\link[ssmc]{best.locale}}
 }
 \details{
 A data frame containg the necessary components to use the \code{\link[ssmc]{best.locale}} function
+
 
 \itemize{
    \item site - Numeric site ID
